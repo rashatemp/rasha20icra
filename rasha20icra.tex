@@ -409,11 +409,30 @@ We then sort the images based on the computed uncertainty measure in a descendin
 \section{Results}
 
 
+Table \ref{tab:null_and_fully_supervised} shows the mean Intersection over Union (mIoU) for each dataset when running the model without any refinement and when training on all of the samples. These values serve as lower and upper bounds for the methods in our experiments.
+
+            \begin{table}
+ %          \vspace{1em}
+        \centering
+        \caption{IoU without any refinement and IoU when training on the whole dataset. These values serve as lower and upper bounds for our sampling methods.}
+        \begin{tabular}{@{}lcc@{}} 
+            \toprule
+              &  No Refinement  & Fully supervised \\ 
+            \midrule 
+    		  Stuttgart  & 0.3429 & 0.7989  \\ \addlinespace
+    		  Zurich  & 0.3595 & 0.7024  \\
+    	
+            \bottomrule
+        \end{tabular}
+        \label{tab:null_and_fully_supervised}
+    \end{table}
+
+
     \begin{figure}
     \centering
  %   \vspace{-1em}
     \includegraphics[width=\linewidth]{pics/pw_iou_stuttgart.pdf}
-   		\caption{Pixel-wise mean IoU on the Stuttgart dataset. Running the model without any new annotations yields an IoU of $0.34$.}
+   		\caption{Pixel-wise mean IoU on the Stuttgart dataset. Running the model without any new annotations yields an IoU of $0.34$. Running the model on the whole dataset yields an IoU of 0.79. Gradient-based approaches can reach $90\%$ of the fully supervised performance with 10 samples.}
 		\label{fig:iou_stuttgart}    		
 %    \vspace{1em}
    \end{figure}
@@ -422,7 +441,7 @@ We then sort the images based on the computed uncertainty measure in a descendin
     \centering
  %   \vspace{-1em}
     \includegraphics[width=\linewidth]{pics/pw_iou_zurich.pdf}
-   		\caption{Pixel-wise mean IoU on the Zurich dataset. Running the model without any new annotations yields an IoU of $0.36$.}
+   		\caption{Pixel-wise mean IoU on the Zurich dataset. Running the model without any new annotations yields an IoU of $0.36$. Running the model on the whole dataset yields an IoU of 0.70. Gradient-based approaches can reach $77\%$ of the fully supervised performance with 10 samples.}
 		\label{fig:iou_zurich}    		
  %   \vspace{1em}
    \end{figure}
@@ -430,8 +449,33 @@ We then sort the images based on the computed uncertainty measure in a descendin
 
 Figures \ref{fig:iou_stuttgart} and \ref{fig:iou_zurich} show the pixel-wise mean intersection over union~(mIoU) on the Stuttgart and Zurich datasets when selecting samples for annotation with different methods. It can be seen from the plots that methods that take into account the impact of the samples on the weights lead to better generalization to the rest of the unseen data, even when presented with a small number of annotated images. In particular, ranking the samples based on the norm of the gradients results in higher mIoU on both datasets.
 
-We also ran an experiment where we trained the model with the pseudo ground truth first and picked samples randomly afterwards. We found that it performs worse than when picking random samples directly. Although pre-training with the pseudo ground truth allows the network to distinguish foreground vegetation from background, the task at hand is to learn three classes and more importantly distinguish crop from weed. Therefore for all experiments, we refine the model without pre-training on the foreground masks.
+To get more insight into what our baselines are, we ran additional experiments with the results shown in Table \ref{tab:add_baselines}. In the first row, we run k-means on the gradients to find clusters that might be representative of the training samples. We found that a number of those clusters had very few samples so a more suitable clustering technique might be needed. 
 
+In the second row, we ran an experiment where we trained the model with the pseudo ground truth first and picked samples randomly afterwards. We found that it performs worse than when picking random samples directly. Although pre-training with the pseudo ground truth allows the network to distinguish foreground vegetation from background, the task at hand is to learn three classes and more importantly distinguish crop from weed. Therefore for all experiments, we refine the model without pre-training on the foreground masks.
+
+In the third row, we run an "oracle" experiment. We find the difference between the parameters of the model without any refinement and the parameters of the fully supervised model. We then find samples with gradients that align with the parameters difference. This experiment is not intended for sample selection, rather to know if the framework had complete knowledge of how the gradients should look like, would it be able to pick better samples. We found that the oracle performance is similar to our gradient-based approaches.
+
+
+
+    
+        \begin{table}
+ %          \vspace{1em}
+        \centering
+        \caption{Additional baselines for training with 10 samples on the Stuttgart dataset.}
+        \begin{tabular}{@{}lc@{}} 
+            \toprule
+            Method  & mIoU \\ 
+            \midrule 
+    		  K-means  & 0.6396  \\ \addlinespace
+    		  Random-pseudo ground truth   & 0.6448  \\ \addlinespace
+    		  Align with parameters difference (oracle)  & 0.7010  \\  
+            \bottomrule
+        \end{tabular}
+        \label{tab:add_baselines}
+    \end{table}
+    
+    
+    
 To further quantify the performance of our approach, we use the object-wise metric defined by \cite{milioto2018real}, where the accuracy is measured for objects larger than 50 pixels. Since the target application is weeding with agricultural robotics, this metric is more directly useful than pixel-wise performance.  
 
 
@@ -449,7 +493,13 @@ We combined the idea of gradient-based selection with two alternative approaches
 
 %Samples selected by the gradient norm are shown in yellow; ones selected by the gradient projection method are shown in red. The plots illustrate that both approaches achieve diversity despite the fact that the strongest gradients cluster together, near the bottom left. However, the fact that the gradient projection method selects many points at the boundary of the distribution suggests that it might be improved further by adding a mechanism to ensure that selected images are representative of a larger subset in the overall dataset. We plan to investigate this in our future work.
 
+    
 
+    
+
+    
+  
+  
     \begin{table}
  %          \vspace{1em}
         \centering
@@ -497,7 +547,9 @@ We combined the idea of gradient-based selection with two alternative approaches
         \label{tab:zurich}
    %               \vspace{-1em}
     \end{table}
-  
+    
+    
+
 
 
 
