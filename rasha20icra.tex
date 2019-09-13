@@ -171,6 +171,7 @@ random sampling for annotation as well as uncertainty-based approaches.
 
 
     \begin{figure*}
+    \vspace{1em}
     \centering
     \includegraphics[scale=0.9]{pics/output_system_overview.pdf}
    		\caption{Overview figure of our system. We first perform very weakly supervised segmentation to obtain pseudo ground truth. Given the labels and different measures produced by the network, we rank the unlabeled samples and pick them accordingly for annotation. These are then used to refine the entire network.}
@@ -489,7 +490,7 @@ As input to our network we only use the RGB channels.
 Table \ref{tab:null_and_fully_supervised} shows the mean Intersection over Union (mIoU) for each dataset when running the model without any refinement and when training on all of the samples. These values serve as lower and upper bounds for the methods in our experiments.
 
             \begin{table}
- %          \vspace{1em}
+          \vspace{1em}
         \centering
         \caption{IoU without any refinement and IoU when training on the whole dataset. These values serve as lower and upper bounds for our sampling methods.}
         \begin{tabular}{@{}lcc@{}} 
@@ -550,7 +551,7 @@ In the last row, we run an "oracle" experiment. We find the difference between t
 
     
         \begin{table}
- %          \vspace{1em}
+           \vspace{1em}
         \centering
         \caption{Additional baselines for training with 10 samples on the Stuttgart dataset.}
         \begin{tabular}{@{}lc@{}} 
@@ -673,7 +674,7 @@ Tables \ref{tab:object_wise} shows how our approach performs on the Stuttgart an
 
 
        \begin{table}
-  %      \vspace{1em}
+        \vspace{1em}
         \centering
       \caption{Precision and recall on the Stuttgart dataset after selecting the first 10 samples. The first table shows the pixel-wise performance and the second table shows the object-wise performance. The highest values are in bold and the lowest in italics. The uncertainty-based method shows a large imbalance in performance on the two classes.}
         \begin{tabular}{@{}lcccc@{}} 
