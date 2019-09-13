@@ -533,7 +533,7 @@ To gain more insight into what our baselines are, we ran additional experiments 
 
 The first row shows the performance when selecting samples that have the highest entropy:
 \begin{align}
-e(\bold{x}) &= \frac{1}{N} \sum_{i=1}^N \sum_{c} p(c|x_i) \log p(c|x_i),
+e(\bold{x}) &= -\frac{1}{N} \sum_{i=1}^N \sum_{c} p(c|x_i) \log p(c|x_i),
 \end{align}  
 
 where $x_i$ is pixel $i$ in image $\bold{x}$, $c$ is the class and $N$ is the number of pixels in the image.
