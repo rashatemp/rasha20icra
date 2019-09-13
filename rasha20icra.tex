@@ -62,7 +62,7 @@
 %DIFF 2
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\title{\LARGE \bf Gradient-based Active Learning for Semantic Segmentation \\of Crop and Weed for Agricultural Robots}
+\title{\LARGE \bf Gradient and log-based Active Learning for Semantic Segmentation \\of Crop and Weed for Agricultural Robots}
 
 \author{Rasha Sheikh \and Andres Milioto \and Philipp Lottes \and Cyrill Stachniss \and Maren Bennewitz \and Thomas Schultz% <-this % stops a space
   \thanks{All authors are with the University of
@@ -147,10 +147,16 @@ active learning  approach to select samples that the network will most benefit
 from and will generalize  to the rest of the unlabeled data while minimizing
 the effort of annotating images.
 
-The main contribution of this work is an active learning approach that
-intelligently picks images taken under the new conditions based on the effect
-these training samples will have on the weight gradients of the CNN. Our
-strategy is based  on the observation that given a trained model and unseen
+The main contribution of this work is investigating active learning approaches that
+intelligently pick images taken under the new conditions. We start by picking samples based 
+on the uncertainty of their predictions, and separately on the network loss with respect 
+to pseudo labels. We add diversity to the sample selection using a log-space ranking.
+Additionally we look into the effect training samples might have on the weight gradients of the CNN,
+and pick samples accordingly.
+%The main contribution of this work is an active learning approach that
+%intelligently picks images taken under the new conditions based on the effect
+%these training samples will have on the weight gradients of the CNN. 
+Our strategy is based  on the observation that given a trained model and unseen
 samples from  a different domain, the samples that the network performs most
 poorly on, especially at the  beginning, will have the largest weight
 gradients and consequently the largest impact on the  weights. This strategy might appear to be circular, since computing gradients already requires class labels at a stage where are still selecting images for labeling.  We circumvent this by using pseudo ground truth that we obtain with very weakly supervised segmentation. Our approach
@@ -249,6 +255,18 @@ To compute the measures explained in the following sections, we use what we refe
 We evaluate our different approaches by first training a network on the Bonn dataset then refining it on the Stuttgart and Zurich datasets. To refine the network we pick unlabeled samples in batches of 10 using one of the methods described in this section. Once the sample are annotated, they are given to the network. We repeat this process iteratively, each time refining the network on all of the newly annotated samples. 
 
 For the methods presented in sections \ref{sec:loss}, \ref{sec:grad_norm}, and \ref{sec:grad_proj}, we first obtain foreground masks with very weak supervision. Figure  \ref{fig:unsupervised_foreground} shows an image, its ground truth and the foreground segmentation (pseudo ground truth) provided by clustering. It is an important finding from our experiments that a rough segmentation is sufficient for the purpose of selecting images for annotation. This makes our proposed gradient-based approach feasible in practice.
+
+
+\subsection{Uncertainty}
+
+To infer the pixel-wise semantic segmentation of a new image, the network computes softmax probabilities in its last layer. The probabilities can serve as a guide as to which samples the network is most uncertain of. For every image passed through the network, we compute the following measure of the prediction confidence:
+\begin{align}
+u(\bold{x}) &= \frac{1}{N} \sum_{i=1}^N \max_c p(c|x_i),
+\end{align}  
+
+where $x_i$ is pixel $i$ in image $\bold{x}$, $c$ is the predicted class and $N$ is the number of pixels in the image.
+
+We then sort the images based on the computed uncertainty measure in a descending order and pick the images accordingly to refine the network on a new dataset. We found that it is helpful for the network to have diverse samples, especially because our goal is to train using only few annotated images. We therefore rank the samples on a log-space scale as mentioned in Section \ref{sec:approach}.
 
 
 \subsection{Loss} \label{sec:loss}
@@ -393,18 +411,6 @@ To speed up prediction, the authors replace the [5x5] conventional convolutional
 
 As input to our network we only use the RGB channels.
 
-
-
-\subsection{Uncertainty}
-
-In addition to the loss and gradient based methods, we also show the performance of an uncertainty driven approach as a baseline. To infer the pixel-wise semantic segmentation of a new image, the network computes softmax probabilities in its last layer. The probabilities can serve as a guide as to which samples the network is most uncertain of. For every image passed through the network, we compute the following measure of the prediction confidence:
-\begin{align}
-u(\bold{x}) &= \frac{1}{N} \sum_{i=1}^N \max_c p(c|x_i),
-\end{align}  
-
-where $x_i$ is pixel $i$ in image $\bold{x}$, $c$ is the predicted class and $N$ is the number of pixels in the image.
-
-We then sort the images based on the computed uncertainty measure in a descending order and pick the images accordingly to refine the network on a new dataset. The images are selected on a log-space scale as mentioned in Section \ref{sec:approach}.
 
 \section{Results}
 
@@ -654,8 +660,8 @@ In our approach, we compute pseudo ground truth labels using very weakly supervi
 segmentation and use those labels to estimate how new, unlabeled samples will 
 affect the weights of the CNN if selected for training. We select the training
 samples for user annotation based on the estimated effect on the weights and use them to refine the 
-network. We evaluated  the performance gain of our gradient-based 
-approach on two agricultural  datasets for weed detection. The datasets 
+network. We evaluated  the performance gain of our gradient-and log based 
+approaches on two agricultural  datasets for weed detection. The datasets 
 reveal different characteristics from the dataset on which the network was pretrained.
 Our results show the effectiveness of our method as it produces higher semantic segmentation
 accuracies with a smaller number of training samples, compared to random sampling as
