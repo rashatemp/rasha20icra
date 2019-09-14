@@ -331,9 +331,14 @@ To compute the measures explained in the following sections, we use what we refe
 
 \subsection{Setup}
 
-We evaluate our different approaches by first training a network on the Bonn dataset then refining it on the Stuttgart and Zurich datasets. To refine the network we pick unlabeled samples in batches of 10 using one of the methods described in this section. Once the sample are annotated, they are given to the network. We repeat this process iteratively, each time refining the network on all of the newly annotated samples. 
+We evaluate our different approaches by first training a network on the Bonn dataset then refining it on the Stuttgart and Zurich datasets. To refine the network we pick unlabeled samples in batches of 10 using one of the methods described in this section. Once the samples are annotated, they are given to the network. We repeat this process iteratively, each time refining the network on all of the newly annotated samples. 
 
-For the methods presented in sections \ref{sec:loss}, \ref{sec:grad_norm}, and \ref{sec:grad_proj}, we first obtain foreground masks with very weak supervision. Figure  \ref{fig:unsupervised_foreground} shows an image, its ground truth and the foreground segmentation (pseudo ground truth) provided by clustering. It is an important finding from our experiments that a rough segmentation is sufficient for the purpose of selecting images for annotation. This makes our proposed gradient-based approach feasible in practice.
+%For the methods presented in sections \ref{sec:loss}, \ref{sec:grad_norm}, and \ref{sec:grad_proj}, we first obtain foreground masks with very weak supervision. 
+
+
+\subsection{Foreground masks}
+
+We first obtain foreground-background segmentation masks by clustering the values of the RGB channels. We run k-means to determine 20 cluster representatives from 10 randomly selected images. After viewing a single image that contains all 20 clusters, a human annotator chooses which clusters represent vegetation. In our experiments, it was enough to select two clusters. Therefore, the human annotation effort is merely a few seconds for one dataset. In accordance with previously used terminology \cite{zhang2018self}, we refer to this step as being very weakly supervised, since it only involves inspecting a single image. Figure  \ref{fig:unsupervised_foreground} shows an image, its ground truth and the foreground segmentation (pseudo ground truth) provided by clustering. It is an important finding from our experiments that a rough segmentation is sufficient for the purpose of selecting images for annotation. This makes our proposed gradient-based approach feasible in practice.
 
 
 \subsection{Uncertainty}
@@ -345,18 +350,27 @@ u(\bold{x}) &= \frac{1}{N} \sum_{i=1}^N \max_c p(c|x_i),
 
 where $x_i$ is pixel $i$ in image $\bold{x}$, $c$ is the predicted class and $N$ is the number of pixels in the image.
 
-We then sort the images based on the computed uncertainty measure in a descending order and pick the images accordingly to refine the network on a new dataset. We found that it is helpful for the network to have diverse samples, especially because our goal is to train using only few annotated images. We therefore rank the samples on a log-space scale as mentioned in Section \ref{sec:approach}.
+We then sort the images based on the computed uncertainty measure in a descending order and pick the images accordingly to refine the network on a new dataset. We found that it is helpful for the network to have diverse samples, especially because our goal is to train using only few annotated images. We therefore rank the samples on a log-space scale.
+
+We generate a string of numbers, starting from zero, that are spaced evenly on a log scale. These numbers are then used as the indices of the samples to be selected. Since the samples are sorted, this approach would more heavily select those that have higher uncertainty values while not completely discarding images that the network is more confident of.
+
 
 
 \subsection{Loss} \label{sec:loss}
 
-The loss of the network is an indication of the segmentation error. Given that training neural networks with backpropagation is driven by the loss, it also provides a useful cue as to which samples the network will most benefit from. We compute the focal loss \cite{DBLP:conf/iccv/LinGGHD17} based on a pseudo ground truth, consisting of a foreground-background segmentation that we achieve using k-means clustering on the RGB channels.
+The loss of the network is an indication of the segmentation error. Given that training neural networks with backpropagation is driven by the loss, it also provides a useful cue as to which samples the network will most benefit from. We compute the focal loss \cite{DBLP:conf/iccv/LinGGHD17} based on the pseudo ground truth.
 
-Initially, we use k-means to determine 20 cluster representatives from 10 randomly selected images. After viewing a single image that contains all 20 clusters, a human annotator chooses which clusters represent vegetation. In our experiments, it was enough to select two clusters. Therefore, the human annotation effort is merely a few seconds for one dataset. In accordance with previously used terminology \cite{zhang2018self}, we refer to this step as being very weakly supervised, since it only involves inspecting a single image. 
+The images are sorted based on this loss in a descending order and selected on a log-scale ranking to encourage diversity as explained earlier.
 
-Pseudo ground truth is generated for all unlabeled images by assigning pixels to the selected clusters, and the loss is computed with respect to it. The images are sorted based on this loss in a descending order. Rather than selecting those with the highest loss, we found that the network learns better when presented with diverse samples. The samples are therefore selected on a log-scale space.
+% consisting of a foreground-background segmentation that we achieve using k-means clustering on the RGB channels.
 
-We generate a string of numbers, starting from zero, that are spaced evenly on a log scale. These numbers are then used as the indices of the samples to be selected. Since the samples are sorted, this approach would more heavily select those that have higher loss values while not completely discarding images that the network is performing well on.
+%Initially, we use k-means to determine 20 cluster representatives from 10 randomly selected images. After viewing a single image that contains all 20 clusters, a human annotator chooses which clusters represent vegetation. In our experiments, it was enough to select two clusters. Therefore, the human annotation effort is merely a few seconds for one dataset. In accordance with previously used terminology \cite{zhang2018self}, we refer to this step as being very weakly supervised, since it only involves inspecting a single image. 
+
+%Pseudo ground truth is generated for all unlabeled images by assigning pixels to the selected clusters, and the loss is computed with respect to it. 
+
+%The images are sorted based on this loss in a descending order. Rather than selecting those with the highest loss, we found that the network learns better when presented with diverse samples. The samples are therefore selected on a log-scale space.
+%
+%We generate a string of numbers, starting from zero, that are spaced evenly on a log scale. These numbers are then used as the indices of the samples to be selected. Since the samples are sorted, this approach would more heavily select those that have higher loss values while not completely discarding images that the network is performing well on.
 
 Note that the pseudo ground truth is only used to compute the loss but the network weights remain unchanged and are only later updated with the manual annotations of the selected samples.
 
