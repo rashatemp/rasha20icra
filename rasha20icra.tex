@@ -146,11 +146,11 @@ active learning  approach to select samples that the network will most benefit
 from and will generalize  to the rest of the unlabeled data while minimizing
 the effort of annotating images.
 
-The main contribution of this work is investigating active learning approaches that
-intelligently pick images taken under the new conditions. We start by picking samples based 
+The main contribution of this work is devising active learning approaches that
+intelligently pick images taken under new conditions. We start by picking samples based 
 on the uncertainty of their predictions, and separately on the network loss with respect 
 to pseudo labels. We add diversity to the sample selection using a log-space ranking.
-Additionally we look into the effect training samples might have on the weight gradients of the CNN,
+Additionally we look into the effect training samples will have on the weight gradients of the CNN,
 and pick samples accordingly.
 %The main contribution of this work is an active learning approach that
 %intelligently picks images taken under the new conditions based on the effect
@@ -166,7 +166,7 @@ truth data is needed. Thus, in our approach, we approximate the ground truth as 
 evaluated our framework on  agricultural datasets~\cite{chebrolu2017agricultural} 
 with different characteristics.  Our results indicate that our method produces a
 higher accuracy on the datasets with a fewer  number of samples compared to
-random sampling for annotation as well as uncertainty-based approaches.
+random sampling for annotation.
 
 
     \begin{figure*}
