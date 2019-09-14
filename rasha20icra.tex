@@ -524,9 +524,21 @@ Table \ref{tab:null_and_fully_supervised} shows the mean Intersection over Union
    \end{figure}
    
    
+ 
+Figures \ref{fig:iou_stuttgart} and \ref{fig:iou_zurich} show the performance on the Stuttgart and Zurich datasets when selecting samples for annotation with different methods.  
+A few observations can be made: the effect of the sampling method is stronger when only a few images are selected. As the model is trained on more and more samples, the accuracy plateaus as expected and the variation between the different methods decreases. It can be noted however that random sampling has a lower performance even with a greater number of images.
+
+When training the model with only a handful of images, the methods that take into account the impact of the samples on the weights lead to better generalization to the rest of the unseen data. In particular, ranking samples by projecting out gradients results in higher mIoU on both datasets. With 10 samples, which would amount to roughly $1\%$ of the training dataset size, we can achieve $90\%$ of the fully supervised performance (Table \ref{tab:null_and_fully_supervised}) on the Stuttgart dataset, compared to $76\%$ with random selection. On the Zurich dataset, we can achieve $82\%$ of the fully supervised performance compared to $63\%$ with random selection.
+
+   
+%A few observations can be made: the effect of the sampling method is stronger when only a few images are selected. Again, it can be seen that methods measuring the influence of the samples on the weights perform better. For instance, training a model with 20 samples picked with the gradient norm method produces accuracies that can only be achieved when picking 60 samples with the random method, lowering the annotation effort considerably.
+%
+%As the model is trained on more and more samples, the accuracy plateaus as expected and the variation between the different methods decreases. It can be noted however that random sampling has a lower performance even with a greater number of images.
    
 
-Figures \ref{fig:iou_stuttgart} and \ref{fig:iou_zurich} show the pixel-wise mean intersection over union~(mIoU) on the Stuttgart and Zurich datasets when selecting samples for annotation with different methods. It can be seen from the plots that methods that take into account the impact of the samples on the weights lead to better generalization to the rest of the unseen data, even when presented with a small number of annotated images. In particular, ranking samples based on projecting out gradients results in higher mIoU on both datasets. With 10 samples, which would amount to roughly $1\%$ of the training dataset size, we can achieve $90\%$ of the fully supervised performance (Table \ref{tab:null_and_fully_supervised}) on the Stuttgart dataset, compared to $76\%$ with random selection. On the Zurich dataset, we can achieve $82\%$ of the fully supervised performance compared to $63\%$ with random selection.
+%Figures \ref{fig:iou_stuttgart} and \ref{fig:iou_zurich} show the pixel-wise mean intersection over union~(mIoU) on the Stuttgart and Zurich datasets when selecting samples for annotation with different methods. It can be seen from the plots that methods that take into account the impact of the samples on the weights lead to better generalization to the rest of the unseen data, even when presented with a small number of annotated images. In particular, ranking samples based on projecting out gradients results in higher mIoU on both datasets. With 10 samples, which would amount to roughly $1\%$ of the training dataset size, we can achieve $90\%$ of the fully supervised performance (Table \ref{tab:null_and_fully_supervised}) on the Stuttgart dataset, compared to $76\%$ with random selection. On the Zurich dataset, we can achieve $82\%$ of the fully supervised performance compared to $63\%$ with random selection.
+
+
 
 To gain more insight into what our baselines are, we ran additional experiments with the results shown in Table \ref{tab:add_baselines}. 
 
