@@ -204,8 +204,7 @@ selects samples in batches, each time refining the network, then computing a
 new  ranking of the unlabeled data. The best samples are then selected and the
 network is re-trained. To compute the real gradients, corresponding ground
 truth data is needed. Thus, in our approach, we approximate the ground truth as the result of unsupervised segmentation to estimate the gradient.  We
-evaluated our framework on  agricultural datasets~\cite{chebrolu2017agricultural} 
-with different characteristics.  Our results indicate that our method produces a
+evaluated our framework using three distinctive sugar beet datasets~\cite{chebrolu2017agricultural} that have different characteristics.  Our results indicate that our method produces a
 higher accuracy on the datasets with a fewer  number of samples compared to
 random sampling for annotation.
 
@@ -331,7 +330,7 @@ To compute the measures explained in the following sections, we use what we refe
 
 \subsection{Setup}
 
-We evaluate our different approaches by first training a network on the Bonn dataset then refining it on the Stuttgart and Zurich datasets. To refine the network we pick unlabeled samples in batches of 10 using one of the methods described in this section. Once the samples are annotated, they are given to the network. We repeat this process iteratively, each time refining the network on all of the newly annotated samples. 
+We evaluate our different approaches by first training a network on the Bonn sugar beet dataset then refining it on the Stuttgart and Zurich datasets separately. To refine the network we pick unlabeled samples in batches of 10 using one of the methods described in this section. Once the samples are annotated, they are given to the network. We repeat this process iteratively, each time refining the network on all of the newly annotated samples. 
 
 %For the methods presented in sections \ref{sec:loss}, \ref{sec:grad_norm}, and \ref{sec:grad_proj}, we first obtain foreground masks with very weak supervision. 
 
