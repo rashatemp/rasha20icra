@@ -492,48 +492,35 @@ The experiments in this section are designed to show how the proposed sample sel
  %   \vspace{1em}
    \end{figure}
    
-   
- 
+    
 Figures \ref{fig:iou_stuttgart} and \ref{fig:iou_zurich} show the performance on the Stuttgart and Zurich datasets when selecting samples for annotation with different methods.  
 A few observations can be made: the effect of the sampling method is stronger when only a few images are selected. As the model is trained on more and more samples, the accuracy plateaus as expected and the variation between the different methods decreases. It can be noted however that random sampling has a lower performance even with a greater number of images.
 
 When training the model with only a handful of images, the methods that take into account the impact of the samples on the weights lead to better generalization to the rest of the unseen data. In particular, ranking samples by projecting out gradients results in higher mIoU on both datasets. With 10 samples, which would amount to roughly $1\%$ of the training dataset size, we can achieve $90\%$ of the fully supervised performance (Table~\ref{tab:null_and_fully_supervised}) on the Stuttgart dataset, compared to $76\%$ with random selection. On the Zurich dataset, we can achieve $82\%$ of the fully supervised performance compared to $63\%$ with random selection.
 
-   
-%A few observations can be made: the effect of the sampling method is stronger when only a few images are selected. Again, it can be seen that methods measuring the influence of the samples on the weights perform better. For instance, training a model with 20 samples picked with the gradient norm method produces accuracies that can only be achieved when picking 60 samples with the random method, lowering the annotation effort considerably.
-%
-%As the model is trained on more and more samples, the accuracy plateaus as expected and the variation between the different methods decreases. It can be noted however that random sampling has a lower performance even with a greater number of images.
-   
 
-%Figures \ref{fig:iou_stuttgart} and \ref{fig:iou_zurich} show the pixel-wise mean intersection over union~(mIoU) on the Stuttgart and Zurich datasets when selecting samples for annotation with different methods. It can be seen from the plots that methods that take into account the impact of the samples on the weights lead to better generalization to the rest of the unseen data, even when presented with a small number of annotated images. In particular, ranking samples based on projecting out gradients results in higher mIoU on both datasets. With 10 samples, which would amount to roughly $1\%$ of the training dataset size, we can achieve $90\%$ of the fully supervised performance (Table~\ref{tab:null_and_fully_supervised}) on the Stuttgart dataset, compared to $76\%$ with random selection. On the Zurich dataset, we can achieve $82\%$ of the fully supervised performance compared to $63\%$ with random selection.
-
-
-
+\subsection{Comparision to Other Baselines}
+    
 To gain more insight into what our baselines are, we ran additional experiments with the results shown in Table~\ref{tab:add_baselines}. 
-
 The first row shows the performance when selecting samples that have the highest entropy:
 \begin{align}
 e(\bold{x}) &= -\frac{1}{N} \sum_{i=1}^N \sum_{c} p(c \mid x_i) \log p(c \mid x_i),
 \end{align}  
-
+\noindent
 where $x_i$ is pixel $i$ in image $\bold{x}$, $c$ is the class and $N$ is the number of pixels in the image.
 
-This measure is frequently used in the literature \cite{chakraborty2015active, zhou2017fine} for active learning. Although it finds samples that the network is uncertain of, it needs to be combined with a measure that provides some diversity in the sample selection. 
+This measure is frequently used in the literature~\cite{chakraborty2015active, zhou2017fine} for active learning. Although it finds samples that the network is uncertain of, it needs to be combined with a measure that provides some diversity in the sample selection. 
 
+%In the second row, we run k-means on the gradients to find clusters that might be representative of the training samples. We found that a number of those clusters had very few samples so a more suitable clustering technique might be needed. 
 
-In the second row, we run k-means on the gradients to find clusters that might be representative of the training samples. We found that a number of those clusters had very few samples so a more suitable clustering technique might be needed. 
+In the second row, we ran an experiment where we trained the model with the pseudo ground truth first and picked samples randomly afterwards. We found that it performs worse than when picking random samples directly. Although pre-training with the pseudo ground truth allows the network to distinguish foreground vegetation from background, the task at hand is to learn three classes and more importantly distinguish crop from weed. Therefore for all experiments, we refine the model without pre-training on the foreground masks.
 
-In the third row, we ran an experiment where we trained the model with the pseudo ground truth first and picked samples randomly afterwards. We found that it performs worse than when picking random samples directly. Although pre-training with the pseudo ground truth allows the network to distinguish foreground vegetation from background, the task at hand is to learn three classes and more importantly distinguish crop from weed. Therefore for all experiments, we refine the model without pre-training on the foreground masks.
+In the last row, we run an "oracle" experiment. We find the difference between the parameters of the model without any refinement and the parameters of the fully supervised model. We then find samples with gradients that align with the parameters difference. This experiment is not intended for sample selection, rather to know if the framework had complete knowledge of how the gradients should look like, would it be able to pick better samples. We found that the oracle performance is similar to our gradient-based approaches after seing 10 new samples. This means that \todo{Complete stentence}.
 
-In the last row, we run an "oracle" experiment. We find the difference between the parameters of the model without any refinement and the parameters of the fully supervised model. We then find samples with gradients that align with the parameters difference. This experiment is not intended for sample selection, rather to know if the framework had complete knowledge of how the gradients should look like, would it be able to pick better samples. We found that the oracle performance is similar to our gradient-based approaches.
-
-
-
-    
         \begin{table}
            \vspace{1em}
         \centering
-        \caption{Additional baselines for training with 10 samples on the Stuttgart dataset.}
+        \caption{Additional baselines for training with 10 samples on the Stuttgart dataset. Compare with \figref{fig:iou_stuttgart}.}
         \begin{tabular}{@{}lc@{}} 
             \toprule
             Method  & mIoU \\ 
@@ -549,10 +536,10 @@ In the last row, we run an "oracle" experiment. We find the difference between t
     
     
     
-To further quantify the performance of our approach, we use the object-wise metric defined by \cite{milioto2018real}, where the accuracy is measured for objects larger than 50 pixels. Since the target application is weeding with agricultural robotics, this metric is more directly useful than pixel-wise performance.  
+To further quantify the performance of our approach, we use the object-wise metric defined by Milioto \etal~\cite{milioto2018real}, where the accuracy is measured for objects larger than 50 pixels. Since the target application is weeding with agricultural robotics, this metric is more directly useful than pixel-wise performance.  
 
 
-Tables \ref{tab:object_wise} shows how our approach performs on the Stuttgart and Zurich datasets. Each row shows the mean accuracy when selecting 10 samples with different methods. The baseline is random sampling shown in the first column. Again, it can be seen that methods measuring the influence of the samples on the weights perform better.
+Table~\ref{tab:object_wise} shows how our approach performs on the Stuttgart and Zurich datasets. Each row shows the mean accuracy when selecting 10 samples with different methods. The baseline is random sampling shown in the first column. Again, it can be seen that methods measuring the influence of the samples on the weights perform better.
 
 %As can be seen from the result,
 
