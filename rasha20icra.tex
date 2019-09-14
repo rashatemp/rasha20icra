@@ -466,9 +466,9 @@ Table~\ref{tab:null_and_fully_supervised} shows the mean Intersection over Union
    		\caption{Pixel-wise mean IoU on the Stuttgart dataset. Running the model without any new annotations yields an IoU of $0.34$. Running the model on the whole dataset yields an IoU of 0.79. Gradient-based approaches can reach $90\%$ of the fully supervised performance with 10 samples.}
 		\label{fig:iou_stuttgart}    		
 %    \vspace{1em}
-   \end{figure}
-   
-    \begin{figure}
+%   \end{figure}
+    \vspace{1.3em}
+%   \begin{figure}
     \centering
  %   \vspace{-1em}
     \includegraphics[width=0.88\linewidth]{pics/pw_iou_zurich-crop.pdf}
@@ -673,18 +673,18 @@ A more detailed breakdown of the methods performance is shown in Table~\ref{tab:
 \section{Conclusion}
 \label{sec:conclusion}
 
-In this paper, we proposed an active learning approach that supports semantic
-segmentation in new environments by effectively selecting samples for user
-annotation with the goal of minimizing the annotation effort. We applied our
-approach in the domain of crop/weed classification for agricultural robots,
-reducing the annotation efforts when moving to different fields or environmental
-conditions.
-
+In this paper, we proposed an active learning approach that supports the adaptation
+of semantic segmentation networks to  new environments. Our approach  effectively 
+selects samples from the new environment for user annotation with the goal of 
+minimizing the annotation effort of the user during retraining.
+We applied  sample selection strategies to the task crop/weed classification for agricultural robots,
+as the appearance between agricultural fields often change substantially such that
+re-training is needed. 
 In our approach, we compute pseudo ground truth labels using very weakly supervised 
 segmentation and use those labels to estimate how new, unlabeled samples will 
 affect the weights of the CNN if selected for training. We select the training
 samples for user annotation based on the estimated effect on the weights and use them to refine the 
-network. Our other ranking methods combine the loss and the uncertainty measures provided by the network with 
+network. Our ranking methods combine the loss and the uncertainty measures provided by the network with 
 log-scale sorting to select samples for annotation.
 We evaluated  the performance gain of our gradient-and log based 
 approaches on two agricultural  datasets for weed detection. The datasets 
@@ -702,48 +702,3 @@ performance.
 \bibliography{bibliography}
 
 \end{document}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% NOTES ON PAPER WRITING
-%
-% Rename the paper.tex file into your paper name. Use the BibTeX key policy (see below)
-%
-% Use a Spell Checker with US English as spelling language
-% 
-% Use Academic Writing Check: https://github.com/devd/Academic-Writing-Check
-%
-% Use GIT for version control. Use our gitlab sever!
-%
-% Make sure your Makefile is working correctly and compiles the documents 
-%
-% All images go to the subfolder pics and reviews into the reviews folder
-%
-% Make sure the source files for images are in the pics folder as well (unless they are huge)
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% NOTES ON BIB ENTRIES
-%
-% Bibtex Key Policy
-%
-%    All in lower case
-%    Use the key structure: <lastnamefirstauthor><2 digit year><conference/journal><extra>
-%    Use <extra>:
-%        only to disambiguate: - first chars of the first 4 words f the title
-%    Examples: stachniss08icra, stachniss08icraws, stachniss08icra-adhc
-%    Use the BibTeX key also at the filename for the paper, e.g., stachniss08icra.pdf
-%
-% Bibtex Entries
-%
-%    Use strings for conferences and journal name in order to keep obtain consistent entries
-%    Use the identical abbreviations for conference name, e.g., “Proc. of the IEEE Int. Conf. on Robotics and Automation (ICRA)”
-%    Avoid adding the location in addition to the city or street of the conference.
-%    Use doi for the official document on the publisher webpage. 
-%    Abbreviate the first name of the authors, e.g., C. Stachniss instead of Cyrill Stachniss
-%    In case of a first name and a middle name, use no space between them, e.g., C.J. Stachniss
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-%DIFF end
