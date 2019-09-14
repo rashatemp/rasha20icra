@@ -296,7 +296,7 @@ As input to our network, we only use the standard RGB channels of a camera.
 In order to perform the semantic segmentation in sugar beet field for agricultural robotics tasks,
 we train our model on the Bonn sugar beet dataset~\cite{chebrolu2017agricultural}. We then refine the trained model on other datasets by incrementally selecting batches of samples. The datasets differ in their crop/weed statistics and the images acquired with the cameras also differ in their illumination. Therefore, simply running the trained model to segment the vegetation in other fields does not work.
 
-In this section, we describe four different approach to sample selection for active learning based on uncertainty (\secref{ssec:unc}), loss (\secref{ssec:loss}), and gradients (\secref{ssec:normgrad} and \secref{ssec:gradproj}).
+In this section, we describe four different approaches to sample selection for active learning based on uncertainty (see \secref{ssec:unc}), loss (see \secref{ssec:loss}), and gradients (see \secref{ssec:normgrad} and \secref{ssec:gradproj}).
 Our  sample section strategies are the gradient-based ones.
 We design these novel gradient-based approaches to select samples, one that is based on the norm of the network gradients, and the other on the norm of projected out gradients. We also combine measures already provided by the network, namely uncertainty and loss, with log-scale ranking. 
 
