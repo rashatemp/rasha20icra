@@ -288,7 +288,13 @@ Du \etal~\cite{du2018adapting} use gradient similarity to determine when an auxi
 Figure~\ref{fig:overview} shows an overview of our framework.
 The key idea of our approach is to perform a very weakly supervised segmentation to obtain pseudo ground truth. Given the labels and different measures produced by the network, we rank the unlabeled samples and pick them accordingly for annotation. These are then used to refine the entire network.
 
-Our CNN for semantic segmentation relies on Bonnet~\cite{milioto2018bonnet} and we train our model on the Bonn sugar beet dataset~\cite{chebrolu2017agricultural}. We then refine the trained model on other datasets by incrementally selecting batches of samples. The datasets differ in their crop/weed statistics and the images acquired with the cameras also differ in their illumination. Therefore, simply running the trained model to segment the vegetation in other fields does not work.
+
+Our CNN for semantic segmentation relies on Bonnet~\cite{milioto2018bonnet}.
+The used network is based on SegNet~\cite{badrinarayanan2017segnet} and ENet~\cite{paszke2016enet}. It has an encoder-decoder structure with a total of 25 [5x5] convolutional layers. It uses batch normalization, residual connections, ReLU as the non-linearity layer, and the focal loss function~\cite{DBLP:conf/iccv/LinGGHD17}.
+As input to our network, we only use the standard RGB channels of a camera.
+
+In order to perform the semantic segmentation in sugar beet field for agricultural robotics tasks,
+we train our model on the Bonn sugar beet dataset~\cite{chebrolu2017agricultural}. We then refine the trained model on other datasets by incrementally selecting batches of samples. The datasets differ in their crop/weed statistics and the images acquired with the cameras also differ in their illumination. Therefore, simply running the trained model to segment the vegetation in other fields does not work.
 
 We design novel gradient based approaches to select samples, one that is based on the norm of the network gradients, and the other on the norm of projected out gradients. We also combine measures already provided by the network, namely uncertainty and loss, with log-scale ranking. In the experiments section we illustrate the performance of these methods and compare them to random sampling.
 
@@ -338,13 +344,13 @@ We evaluate our different approaches by first training a network on the Bonn sug
 We first obtain foreground-background segmentation masks by clustering the values of the RGB channels. We run k-means to determine 20 cluster representatives from 10 randomly selected images. After viewing a single image that contains all 20 clusters, a human annotator chooses which clusters represent vegetation. In our experiments, it was enough to select two clusters. Therefore, the human annotation effort is merely a few seconds for one dataset. In accordance with previously used terminology \cite{zhang2018self}, we refer to this step as being very weakly supervised, since it only involves inspecting a single image. Figure~\ref{fig:unsupervised_foreground} shows an image, its ground truth and the foreground segmentation (pseudo ground truth) provided by clustering. It is an important finding from our experiments that a rough and easy to compute segmentation is sufficient for the purpose of selecting images for annotation. This makes our proposed gradient-based approach feasible in practice.
 
 
-\subsection{Uncertainty}
+\subsection{Sample Selection Using Uncertainty}
 
 To infer the pixel-wise semantic segmentation of a new image, the network computes softmax probabilities in its last layer. The probabilities can serve as a guide as to which samples the network is most uncertain of. For every image passed through the network, we compute the following measure of the prediction confidence:
 \begin{align}
 u(\bold{x}) &= \frac{1}{N} \sum_{i=1}^N \max_c p(c  \mid  x_i),
 \end{align}  
-
+\noindent
 where $x_i$ is pixel $i$ in image $\bold{x}$, $c$ is the predicted class and $N$ is the number of pixels in the image.
 
 We then sort the images based on the computed uncertainty measure in a descending order and pick the images accordingly to refine the network on a new dataset. We found that it is helpful for the network to have diverse samples, especially because our goal is to train using only few annotated images. We therefore rank the samples on a log-space scale.
@@ -353,7 +359,7 @@ We generate a string of numbers, starting from zero, that are spaced evenly on a
 
 
 
-\subsection{Loss} \label{sec:loss}
+\subsection{Sample Selection Using Loss} \label{sec:loss}
 
 The loss of the network is an indication of the segmentation error. Given that training neural networks with backpropagation is driven by the loss, it also provides a useful cue as to which samples the network will most benefit from. We compute the focal loss \cite{DBLP:conf/iccv/LinGGHD17} based on the pseudo ground truth.
 
@@ -372,11 +378,11 @@ The images are sorted based on this loss in a descending order and selected on a
 Note that the pseudo ground truth is only used to compute the loss but the network weights remain unchanged and are only later updated with the manual annotations of the selected samples.
 
 
-\subsection{Norm of Gradients} \label{sec:grad_norm}
+\subsection{Sample Selection Using Norm of Gradients} \label{sec:grad_norm}
 
 For this approach and the following one, we pick those samples for annotation that might have the largest impact on the network weights. The norm of the network gradients is a measure that is indicative of which samples will affect the weights more than others. Although the loss and norm of gradients are correlated, there are instances where the loss could be high for certain samples, yet the gradient is locally small. This depends on the loss function and the state of the current network parameters. 
 
-As in the previous approach, we use labels from very weakly supervised segmentation as pseudo ground truth. We run the network on the training images for one epoch (to maintain computational efficiency) and compute the gradients. Again we note that this step is only used to compute the gradients but the network weights remain unchanged. Once we have the gradients, we compute the $L_2$ norm of those in the last two layers of the network (the classifier layer and the one immediately before it).
+As in the previous approach, we use labels from very weakly supervised segmentation as pseudo ground truth. We run the network on the training images for one epoch (to maintain computational efficiency) and compute the gradients. Again we note that this step is only used to compute the gradients but the network weights remain unchanged. Once we have the gradients, we compute the $L_2$ norm of those in the last two layers of the network (the classifier layer and the one immediately before it):
 \begin{align}
 n_g(\bold{x}) &=  \left\lVert \nabla_{w_f} \mathcal{L}(\bold{x}) \right\rVert,
 \end{align}  
@@ -384,9 +390,9 @@ where $\bold{x}$ is the image and $w$ are the weights of the final two layers.
 
 The images are sorted based on this measure in a descending order and again we pick samples on a log-space scale afterwards as explained earlier.
 
-\subsection{Gradient Projection} \label{sec:grad_proj}
+\subsection{Sample Selection Using Gradient Projection} \label{sec:grad_proj}
 
-The log-space in the previous approaches was used to ensure there is enough diversity among the samples so that the network does not overfit on them and can generalize to unseen data. Here we use a different method that relies on the space spanned by the gradients where we project onto the orthogonal complement of the gradients of the selected samples. For every picked sample we project the gradients of all remaining samples onto the selected sample gradient. We then subtract the projected gradient from the original gradients. The residual we are left with indicates which samples have the strongest remaining effect on the weights after accounting for the already selected samples. This can be formulated as:
+The log-space in the previous approaches was used to ensure there is enough diversity among the samples so that the network does not overfit on them and can generalize to unseen data. Here we use a different method that relies on the space spanned by the gradients where we project onto the orthogonal complement of the gradients of the selected samples. For every picked, sample we project the gradients of all remaining samples onto the selected sample gradient. We then subtract the projected gradient from the original gradients. The residual we are left with indicates which samples have the strongest remaining effect on the weights after accounting for the already selected samples. This can be formulated as:
 \begin{align}
 n_p(\bold{x}) &=  \left\lVert \bold{g_x} - \sum_{i=1}^S \frac{\left\langle \bold{g_i}, \bold{g_x} \right\rangle}{\left\langle \bold{g_i}, \bold{g_i} \right\rangle} \bold{g_i} \right\rVert,
 \end{align}
@@ -430,14 +436,6 @@ The datasets we used were acquired with a Bosch Deepfield Robotics UGV in three 
 %We follow the approach of \cite{milioto2018real} and split the new dataset into three sets: 40\% for training, 10\% for validation, and 50\% for testing. The samples are picked from the training set. All experiments were conducted on four Nvidia Titan~X GPUs.  
 
 
-\subsection{Segmentation Framework} \label{sec:seg_framework}
-
-
-Bonnet is an open-source deep network framework developed by \cite{milioto2018bonnet} that was designed with efficiency in mind. The network is based on SegNet \cite{badrinarayanan2017segnet} and ENet \cite{paszke2016enet}. It has an encoder-decoder structure with a total of 25 [5x5] convolutional layers. It uses batch normalization, residual connections, ReLU as the non-linearity layer, and the focal loss function \cite{DBLP:conf/iccv/LinGGHD17}.
-
-To speed up prediction, the authors replace the [5x5] conventional convolutional layer with a mix of [1x1] convolutions and separable [1x5] and [5x1] convolutions. Additionally, instead of using the relatively more expensive transposed convolutions in the decoder, unpooling is done using the respective pooling indices in the encoder part.
-
-As input to our network we only use the RGB channels.
 
 
 \section{Results}
