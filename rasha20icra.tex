@@ -325,9 +325,16 @@ To compute the strategies explained in the following subsections, we use what we
     \includegraphics[width=0.32\linewidth]{pics/unsupervised/img_masks_8mm_fromImages_frame256.png}
     \includegraphics[width=0.32\linewidth]{pics/unsupervised/gt_masks_8mm_fromImages_frame256_GroundTruth_iMap.png}
     \includegraphics[width=0.32\linewidth]{pics/unsupervised/lbl_masks_8mm_fromImages_frame256.png}
-    \caption{Left: Input image; Middle: Ground truth semantic segmentation; Right: Foreground segmentation of vegetation provided by clustering. Note that only a rough segmentation is enough for our approach.}
+    \caption{Very weakly supervised segmentation used as pseudo ground
+      truth by our approach.  Left: Input image. Middle: Ground truth semantic
+      segmentation; Right: Foreground segmentation of vegetation
+      provided by k-means clustering. Note that only such a rough
+      segmentation as pseudo ground truth is enough for our approach.}
     \label{fig:unsupervised_foreground}
 \end{figure}
+
+
+rough and easy to compute segmentation is sufficient for the purpose of selecting images for annotation
 
 %\subsection{Uncertainty}
 %

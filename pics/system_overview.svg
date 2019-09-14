@@ -178,8 +178,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.979899"
-     inkscape:cx="202.95344"
-     inkscape:cy="689.33483"
+     inkscape:cx="403.65076"
+     inkscape:cy="688.32468"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -414,27 +414,27 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="291.14285"
+       x="247.14285"
        y="119.71935"
        id="text8030"
        sodipodi:linespacing="0%"><tspan
          sodipodi:role="line"
          id="tspan8032"
-         x="291.14285"
+         x="247.14285"
          y="119.71935"
-         style="font-size:10px;line-height:0%">very weakly supervised segmentation</tspan></text>
+         style="font-size:15px;line-height:0%">very weakly supervised segmentation</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="326.18262"
+       x="290.18262"
        y="279.76385"
        id="text8030-2"
        sodipodi:linespacing="0%"><tspan
          sodipodi:role="line"
          id="tspan8032-7"
-         x="326.18262"
+         x="290.18262"
          y="279.76385"
-         style="font-size:10px;line-height:0%">encoder-decoder network</tspan></text>
+         style="font-size:15px;line-height:0%">encoder-decoder network</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -446,19 +446,19 @@
          id="tspan8032-9"
          x="327.61118"
          y="448.97815"
-         style="font-size:10px;line-height:0%">ranking</tspan></text>
+         style="font-size:15px;line-height:0%">ranking</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="439.77875"
+       x="421.77875"
        y="389.47815"
        id="text8030-0-0"
        sodipodi:linespacing="0%"><tspan
          sodipodi:role="line"
          id="tspan8032-9-6"
-         x="439.77875"
+         x="421.77875"
          y="389.47815"
-         style="font-size:10px;line-height:0%">annotation</tspan></text>
+         style="font-size:15px;line-height:0%">annotation</tspan></text>
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.98485166px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker5313)"
        d="m 576.31466,353.31417 0,-19.09828 c -112.17058,0.48971 -112.17038,-0.0154 -112.17038,-0.0154 l -2e-4,-45.03698"
@@ -468,15 +468,15 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="484.40985"
+       x="468.40985"
        y="328.27533"
        id="text8030-0-0-5"
        sodipodi:linespacing="0%"><tspan
          sodipodi:role="line"
          id="tspan8032-9-6-3"
-         x="484.40985"
+         x="468.40985"
          y="328.27533"
-         style="font-size:10px;line-height:0%">refine network</tspan></text>
+         style="font-size:15px;line-height:0%">refine network</tspan></text>
     <image
        y="352.24368"
        x="521.25159"
