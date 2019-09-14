@@ -766,13 +766,14 @@ In our approach, we compute pseudo ground truth labels using very weakly supervi
 segmentation and use those labels to estimate how new, unlabeled samples will 
 affect the weights of the CNN if selected for training. We select the training
 samples for user annotation based on the estimated effect on the weights and use them to refine the 
-network. We evaluated  the performance gain of our gradient-and log based 
+network. Our other ranking methods combine the loss and the uncertainty measures provided by the network with 
+log-scale sorting to select samples for annotation.
+We evaluated  the performance gain of our gradient-and log based 
 approaches on two agricultural  datasets for weed detection. The datasets 
 reveal different characteristics from the dataset on which the network was pretrained.
 Our results show the effectiveness of our method as it produces higher semantic segmentation
-accuracies with a smaller number of training samples, compared to random sampling as
-well as uncertainty-based approaches for selecting samples for annotation. As a result
-of that, the effort in human annotation is considerably reduced without compromising
+accuracies with a smaller number of training samples, compared to random sampling. As a result
+of that, the effort in human annotation is reduced without compromising
 performance.
  
      %    \vspace{1em}
