@@ -121,7 +121,7 @@ weed control. For the semantic  segmentation, this means that we need to
 compute the semantic label ``crop'', ``weed'',  or ``misc'' for every pixel in
 the image. This task is particularly challenging  as the field conditions
 often change substantially between years, regions, weather, and  soil
-conditions. Thus, one often tries to adapt and refine existing semantic
+conditions as can be seen in Figure \ref{fig:datasets_images}.  Thus, one often tries to adapt and refine existing semantic
 segmentation systems to new field conditions through annotated data from the
 new field. As these new annotation need to be executed at the end-users site,
 one is interested in keeping this effort as low as possible. Thus, this
@@ -146,6 +146,47 @@ active learning  approach to select samples that the network will most benefit
 from and will generalize  to the rest of the unlabeled data while minimizing
 the effort of annotating images.
 
+
+    \begin{figure}
+    \centering
+     \begin{subfigure}[b]{0.31\linewidth}
+    \includegraphics[width=\linewidth]{pics/bonn/images/bonirob_2016-04-28-12-20-29_6_frame217.png}
+   		\caption{}
+		\label{bonn_img}    		
+   \end{subfigure}
+      \begin{subfigure}[b]{0.31\linewidth}
+    \includegraphics[width=\linewidth]{pics/stuttgart/images/masks_8mm_fromImages_frame479.png}
+   		\caption{}
+		\label{stuttgart_img}    		
+   \end{subfigure}
+           \begin{subfigure}[b]{0.31\linewidth}
+    \includegraphics[width=\linewidth]{pics/zurich/images/bonirob_2016-10-13-09-03-00_0_frame66.png}
+   		\caption{}
+		\label{zurich_img}    		
+   \end{subfigure}
+   
+           \begin{subfigure}[b]{0.31\linewidth}
+    \includegraphics[width=\linewidth]{pics/bonn/annotations/bonirob_2016-04-28-12-20-29_6_frame217.png}
+   		\caption{}
+		\label{bonn_lbl}    		
+   \end{subfigure}
+        \begin{subfigure}[b]{0.31\linewidth}
+    \includegraphics[width=\linewidth]{pics/stuttgart/annotations/masks_8mm_fromImages_frame479_GroundTruth_iMap.png}
+   		\caption{}
+		\label{stuttgart_lbl}    		
+   \end{subfigure}
+        \begin{subfigure}[b]{0.31\linewidth}
+    \includegraphics[width=\linewidth]{pics/zurich/annotations/bonirob_2016-10-13-09-03-00_0_frame66.png}
+   		\caption{}
+		\label{zurich_lbl}    		
+   \end{subfigure}
+    \caption{Sample images from the Bonn, Stuttgart, and Zurich datasets in the first, second, and third column, respectively. The first row shows the RGB images and the second row shows their annotations~(green denotes crop while red denotes weed).}
+    \label{fig:datasets_images}
+\end{figure}
+
+
+
+
 The main contribution of this work is devising active learning approaches that
 intelligently pick images taken under new conditions. We start by picking samples based 
 on the uncertainty of their predictions, and separately on the network loss with respect 
@@ -167,6 +208,14 @@ evaluated our framework on  agricultural datasets~\cite{chebrolu2017agricultural
 with different characteristics.  Our results indicate that our method produces a
 higher accuracy on the datasets with a fewer  number of samples compared to
 random sampling for annotation.
+
+
+
+
+
+   
+   
+
 
 
     \begin{figure*}
@@ -400,48 +449,6 @@ The datasets we used were acquired with a Bosch Deepfield Robotics BoniRob UGV i
 %    \label{fig:datasets_images}
 %\end{figure}
 %
-
-
-
-    \begin{figure}
-    \centering
-     \begin{subfigure}[b]{0.31\linewidth}
-    \includegraphics[width=\linewidth]{pics/bonn/images/bonirob_2016-04-28-12-20-29_6_frame217.png}
-   		\caption{}
-		\label{bonn_img}    		
-   \end{subfigure}
-      \begin{subfigure}[b]{0.31\linewidth}
-    \includegraphics[width=\linewidth]{pics/stuttgart/images/masks_8mm_fromImages_frame479.png}
-   		\caption{}
-		\label{stuttgart_img}    		
-   \end{subfigure}
-           \begin{subfigure}[b]{0.31\linewidth}
-    \includegraphics[width=\linewidth]{pics/zurich/images/bonirob_2016-10-13-09-03-00_0_frame66.png}
-   		\caption{}
-		\label{zurich_img}    		
-   \end{subfigure}
-   
-   
-   
-        \begin{subfigure}[b]{0.31\linewidth}
-    \includegraphics[width=\linewidth]{pics/bonn/annotations/bonirob_2016-04-28-12-20-29_6_frame217.png}
-   		\caption{}
-		\label{bonn_lbl}    		
-   \end{subfigure}
-        \begin{subfigure}[b]{0.31\linewidth}
-    \includegraphics[width=\linewidth]{pics/stuttgart/annotations/masks_8mm_fromImages_frame479_GroundTruth_iMap.png}
-   		\caption{}
-		\label{stuttgart_lbl}    		
-   \end{subfigure}
-        \begin{subfigure}[b]{0.31\linewidth}
-    \includegraphics[width=\linewidth]{pics/zurich/annotations/bonirob_2016-10-13-09-03-00_0_frame66.png}
-   		\caption{}
-		\label{zurich_lbl}    		
-   \end{subfigure}
-    \caption{Sample images from the Bonn, Stuttgart, and Zurich datasets in the first, second, and third column, respectively. The first row shows the RGB images and the second row shows their annotations~(green denotes crop while red denotes weed).}
-    \label{fig:datasets_images}
-\end{figure}
-
 
 
 
