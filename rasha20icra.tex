@@ -197,13 +197,6 @@ random sampling for annotation.
    % \end{figure*}
 
 
-
-    \begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{pics/output_system_overview.pdf}
-   		\caption{Overview figure of our system. We first perform very weakly supervised segmentation to obtain pseudo ground truth. Given the labels and different measures produced by the network, we rank the unlabeled samples and pick them accordingly for annotation. These are then used to refine the entire network.}
-		\label{fig:overview}    		
-   \end{figure}
    
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -280,11 +273,22 @@ Du \etal~\cite{du2018adapting} use gradient similarity to determine when an auxi
 %
 %Previous work, such as the Expected Gradient Length (EGL)~\cite{huang2016active, settles2008multiple}, has explored how changes in model parameters can be exploited for sample selection. However, differently it computes the expectation of the gradient norm over all possible annotations, which would be prohibitively expensive for pixel-wise semantic segmentation of images. We instead compute gradients from rough foreground/background segmentation.
 
+
+    \begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{pics/output_system_overview.pdf}
+      \caption{Overview figure of our system. The key ideas is that we first perform a very weakly supervised segmentation to obtain pseudo ground truth. Given the labels and different measures produced by the network, we rank the unlabeled samples and pick them accordingly for annotation. These are then used to refine the entire network.}
+    \label{fig:overview}        
+   \end{figure}
+
+
 \section{Our Approach to Effective Sample Selection}
 \label{sec:approach}
 
-Figure~\ref{fig:overview} shows an overview of our framework. We use Bonnet~\cite{milioto2018bonnet} to train a model on the Bonn sugar beet dataset~\cite{chebrolu2017agricultural}. We then refine the trained model on other datasets by incrementally selecting batches of samples. The datasets differ in their crop/weed statistics and the images acquired with the cameras also differ in their illumination. Therefore, simply running the trained model to segment the vegetation in other fields does not work.
+Figure~\ref{fig:overview} shows an overview of our framework.
+The key idea of our approach is to perform a very weakly supervised segmentation to obtain pseudo ground truth. Given the labels and different measures produced by the network, we rank the unlabeled samples and pick them accordingly for annotation. These are then used to refine the entire network.
 
+Our CNN for semantic segmentation relies on Bonnet~\cite{milioto2018bonnet} and we train our model on the Bonn sugar beet dataset~\cite{chebrolu2017agricultural}. We then refine the trained model on other datasets by incrementally selecting batches of samples. The datasets differ in their crop/weed statistics and the images acquired with the cameras also differ in their illumination. Therefore, simply running the trained model to segment the vegetation in other fields does not work.
 
 We design novel gradient based approaches to select samples, one that is based on the norm of the network gradients, and the other on the norm of projected out gradients. We also combine measures already provided by the network, namely uncertainty and loss, with log-scale ranking. In the experiments section we illustrate the performance of these methods and compare them to random sampling.
 
