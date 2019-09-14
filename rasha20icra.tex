@@ -460,15 +460,14 @@ The datasets we used were acquired with a Bosch Deepfield Robotics UGV in three 
 %We follow the approach of \cite{milioto2018real} and split the new dataset into three sets: 40\% for training, 10\% for validation, and 50\% for testing. The samples are picked from the training set. All experiments were conducted on four Nvidia Titan~X GPUs.  
 
 
-\subsection{Results}
+\subsection{Re-Training Performance}
 
-
-Table~\ref{tab:null_and_fully_supervised} shows the mean Intersection over Union (mIoU) for each dataset when running the model without any refinement and when training on all of the samples. These values serve as lower and upper bounds for the methods in our experiments.
+The experiments in this section are designed to show how the proposed sample selection strategies impact the performace of the network in the new environment. For quantifying the performance, we use the mean Intersection over Union (mIoU) as the performance measure. To provode the lower and upper bounds for the methods, we list in Table~\ref{tab:null_and_fully_supervised}  the mIoU for each dataset when running the model without any refinement as well as when training on all of the samples. 
 
             \begin{table}
           \vspace{1em}
         \centering
-        \caption{IoU without any refinement and IoU when training on the whole dataset. These values serve as lower and upper bounds for our sampling methods.}
+        \caption{IoU without any refinement (lower bound) and IoU when training on the whole dataset (upper bound).}
         \begin{tabular}{@{}lcc@{}} 
             \toprule
               &  No Refinement  & Fully supervised \\ 
@@ -546,8 +545,8 @@ In the last row, we run an "oracle" experiment. We find the difference between t
             \toprule
             Method  & mIoU \\ 
             \midrule 
-             Entropy   \cite{chakraborty2015active, zhou2017fine} & 0.5879   \\ \addlinespace
-    		  K-means  & 0.6396  \\ \addlinespace
+             Entropy~\cite{chakraborty2015active, zhou2017fine} & 0.5879   \\ \addlinespace
+%    		  K-means  & 0.6396  \\ \addlinespace
     		  Random-pseudo ground truth   & 0.6448  \\ \addlinespace
     		  Align with parameters difference (oracle)  & 0.7010  \\  
             \bottomrule
@@ -565,77 +564,12 @@ Tables \ref{tab:object_wise} shows how our approach performs on the Stuttgart an
 %As can be seen from the result,
 
 
+\todo{I do not fully understand this and also do not see in the figure the efect of that}
+We combined the idea of gradient-based selection with two alternative approaches to achieving diversity in the selected images: Picking on a log scale, or projecting out gradients that have been selected previously. In our experiments, both strategies performed well (]\todo{How do I see that?}). To further analyze them, we plot the t-distributed Stochastic Neighbor Embedding (t-SNE) of the gradients in Figure~\ref{fig:tsne}. Each circle denotes the 2-D embedding of the gradient of a single image before picking the first 10 samples. Samples selected by each method are shown in different colors. We found that both gradient and loss based approaches favor samples that have gradients clustered at the bottom of the plot \todo{What does this mean/imply?}. In our future work we plan to investigate this further.\todo{?}
 
-%A few observations can be made: the effect of the sampling method is stronger when only a few images are selected. Again, it can be seen that methods measuring the influence of the samples on the weights perform better. For instance, training a model with 20 samples picked with the gradient norm method produces accuracies that can only be achieved when picking 60 samples with the random method, lowering the annotation effort considerably.
-%
-%As the model is trained on more and more samples, the accuracy plateaus as expected and the variation between the different methods decreases. It can be noted however that random sampling has a lower performance even with a greater number of images.
-%
-%The gradient norm method shows a consistent improvement over other methods for different number of samples and across the two datasets, confirming that samples that might have a larger influence on the weights are more valuable for annotation, as the network can benefit more from them.
-%
-We combined the idea of gradient-based selection with two alternative approaches to achieving diversity in the selected images: Picking on a log scale, or projecting out gradients that have been selected previously. In our experiments, both strategies performed well. To further analyze them, we plot the t-distributed Stochastic Neighbor Embedding (t-SNE) of the gradients in Figure~\ref{fig:tsne}. Each circle denotes the 2-D embedding of the gradient of a single image before picking the first 10 samples. Samples selected by each method are shown in different colors. We found that both gradient and loss based approaches favor samples that have gradients clustered at the bottom of the plot. In our future work we plan to investigate this further.
+\todo{It would help to interpret the results and tell the reader what he/she should see.}
 
-
-
-
-%Samples selected by the gradient norm are shown in yellow; ones selected by the gradient projection method are shown in red. The plots illustrate that both approaches achieve diversity despite the fact that the strongest gradients cluster together, near the bottom left. However, the fact that the gradient projection method selects many points at the boundary of the distribution suggests that it might be improved further by adding a mechanism to ensure that selected images are representative of a larger subset in the overall dataset. We plan to investigate this in our future work.
-
-    
-
-   
-  
-%  
-%    \begin{table}
-% %          \vspace{1em}
-%        \centering
-%        \caption{Object-wise Performance on the Stuttgart dataset. Each row shows the performance after selecting 10 samples with the different methods and refining the network. Running the model without any new annotations yields an accuracy of $0.15$.}
-%        \begin{tabular}{@{}cccccc@{}} 
-%            \toprule
-%            \makecell{Samples \\ No.} & \makecell{Random} & \makecell{Uncertainty} & \makecell{Loss} & \makecell{Gradient \\ Norm} & \makecell{Gradient \\ Proj.} \\ 
-%            \midrule 
-%    		  10  & 0.6920 & 0.6437 & 0.7882 & 0.8040 & 0.8196 \\ \addlinespace
-%    		  20  & 0.7402 & 0.8408 & 0.7769 & 0.8350 & 0.8404 \\ \addlinespace
-%    		  30  & 0.8138 & 0.8359 & 0.7950 & 0.8461 & 0.8470 \\ \addlinespace
-%    		  40  & 0.8254 & 0.8529 & 0.8555 & 0.8682 & 0.8252 \\ \addlinespace
-%    		  50  & 0.8225 & 0.8529 & 0.8523 & 0.8599 & 0.8278 \\ \addlinespace
-%    		  60  & 0.8308 & 0.8497 & 0.8596 & 0.8569 & 0.8384 \\ \addlinespace
-%    		  70  & 0.8335 & 0.8542 & 0.8666 & 0.8622 & 0.8366 \\ \addlinespace
-%    		  80  & 0.8321 & 0.8595 & 0.8455 & 0.8596 & 0.8386 \\ \addlinespace
-%    		  90  & 0.8424 & 0.8565 & 0.8643 & 0.8639 & 0.8399 \\ \addlinespace
-%    		 100  & 0.8394 & 0.8502 & 0.8638 & 0.8531 & 0.8529 \\    
-%            \bottomrule
-%        \end{tabular}
-%        \label{tab:stuttgart}
-%    \end{table}
-%   
-%       
-%    
-%        \begin{table}
-%        \centering
-%        \caption{Object-wise Performance on the Zurich dataset. Each row shows the performance after selecting 10 samples with the different methods and refining the network. Running the model without any new annotations yields an accuracy of $0.33$.}
-%        \begin{tabular}{@{}cccccc@{}} 
-%            \toprule
-%            \makecell{Samples \\ No.} & \makecell{Random} & \makecell{Uncertainty} & \makecell{Loss} & \makecell{Gradient \\ Norm} & \makecell{Gradient \\ Proj.} \\ 
-%            \midrule 
-%    		  10  & 0.7552 & 0.6943 & 0.7697 & 0.8354 & 0.8025 \\ \addlinespace
-%    		  20  & 0.7971 & 0.8281 & 0.8189 & 0.8768 & 0.8170 \\ \addlinespace
-%    		  30  & 0.8591 & 0.8674 & 0.8321 & 0.8553 & 0.8299 \\ \addlinespace
-%    		  40  & 0.8575 & 0.8690 & 0.8610 & 0.8711 & 0.8479 \\ \addlinespace
-%    		  50  & 0.8593 & 0.8547 & 0.8636 & 0.8852 & 0.8784 \\ \addlinespace
-%    		  60  & 0.8666 & 0.8737 & 0.8805 & 0.8827 & 0.8895 \\ \addlinespace
-%    		  70  & 0.8601 & 0.8664 & 0.8880 & 0.8827 & 0.8878 \\ \addlinespace
-%    		  80  & 0.8241 & 0.8869 & 0.8867 & 0.8897 & 0.8784 \\ \addlinespace
-%    		  90  & 0.8476 & 0.8667 & 0.8812 & 0.8928 & 0.8871 \\ \addlinespace
-%    		  100  & 0.7911 & 0.8700 &0.8873 & 0.8873 & 0.8805 \\    
-%            \bottomrule
-%        \end{tabular}
-%        \label{tab:zurich}
-%   %               \vspace{-1em}
-%    \end{table}
-%    
-%    
-
-
-
+ 
    \begin{table}
  %          \vspace{1em}
         \centering
