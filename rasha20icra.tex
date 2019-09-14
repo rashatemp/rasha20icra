@@ -302,7 +302,7 @@ To compute the measures explained in the following sections, we use what we refe
 %
 %To infer the pixel-wise semantic segmentation of a new image, the network computes softmax probabilities in its last layer. The probabilities can serve as a guide as to which samples the network is most uncertain of. For every image passed through the network, we compute the following measure of the prediction confidence:
 %\begin{align}
-%u(\bold{x}) &= \frac{1}{N} \sum_{i=1}^N \max_c p(c|x_i),
+%u(\bold{x}) &= \frac{1}{N} \sum_{i=1}^N \max_c p(c  \mid  x_i),
 %\end{align}  
 %
 %where $x_i$ is pixel $i$ in image $\bold{x}$, $c$ is the predicted class and $N$ is the number of pixels in the image.
@@ -330,7 +330,7 @@ We first obtain foreground-background segmentation masks by clustering the value
 
 To infer the pixel-wise semantic segmentation of a new image, the network computes softmax probabilities in its last layer. The probabilities can serve as a guide as to which samples the network is most uncertain of. For every image passed through the network, we compute the following measure of the prediction confidence:
 \begin{align}
-u(\bold{x}) &= \frac{1}{N} \sum_{i=1}^N \max_c p(c|x_i),
+u(\bold{x}) &= \frac{1}{N} \sum_{i=1}^N \max_c p(c  \mid  x_i),
 \end{align}  
 
 where $x_i$ is pixel $i$ in image $\bold{x}$, $c$ is the predicted class and $N$ is the number of pixels in the image.
@@ -541,7 +541,7 @@ To gain more insight into what our baselines are, we ran additional experiments 
 
 The first row shows the performance when selecting samples that have the highest entropy:
 \begin{align}
-e(\bold{x}) &= -\frac{1}{N} \sum_{i=1}^N \sum_{c} p(c|x_i) \log p(c|x_i),
+e(\bold{x}) &= -\frac{1}{N} \sum_{i=1}^N \sum_{c} p(c \mid x_i) \log p(c \mid x_i),
 \end{align}  
 
 where $x_i$ is pixel $i$ in image $\bold{x}$, $c$ is the class and $N$ is the number of pixels in the image.
