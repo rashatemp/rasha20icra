@@ -84,16 +84,15 @@ of semantic segmentation with the goal of reducing the  human labeling effort.
 Our target application is agricultural robotics and we focus on the task of
 distinguishing between crop and weed plants from image data. A key challenge in this
 application is the  transfer of an existing semantic segmentation CNN to a new
-field. We propose a novel approach that, given a trained model on one field,
+field. We propose a novel approach that, given a trained model on one field and rough foreground/background segmentation,
 refines the network on a substantially different field  providing an effective
-method of selecting samples to annotate for supporting the transfer. Our
-method takes into account the influence of the so far unlabeled samples on the
-weights of the network and  ranks and selects them accordingly for annotation.
+method of selecting samples to annotate for supporting the transfer. Two of our ranking approaches take
+ into account the influence of the so far unlabeled samples on the
+weights of the network and select them accordingly for annotation. The other ranking approaches 
+use the loss and uncertainty measures provided by the network then ranks samples on a log-scale to ensure diversity.
 We evaluated our approach on two challenging  datasets from the agricultural
 robotics domain and show that we achieve a higher accuracy with a  smaller
-number of samples compared to randomly selecting samples for annotation as well as
-uncertainty-based  approaches to select examples for annotation. Thus, our
-approach reduces the required human labeling  effort.
+number of samples compared to randomly selecting samples for annotation, which consequently reduces the required human labeling  effort.
 
 \end{abstract} 
 
@@ -664,13 +663,6 @@ Tables \ref{tab:object_wise} shows how our approach performs on the Stuttgart an
         \label{tab:object_wise}
     \end{table}
    
-       
-
-    
-    
-    
-    
-
 
 
        \begin{table}
