@@ -277,7 +277,11 @@ Du \etal~\cite{du2018adapting} use gradient similarity to determine when an auxi
     \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{pics/output_system_overview.pdf}
-      \caption{Overview figure of our system. The key ideas is that we first perform a very weakly supervised segmentation to obtain pseudo ground truth. Given the labels and different measures produced by the network, we rank the unlabeled samples and pick them accordingly for annotation. These are then used to refine the entire network.}
+      \caption{Overview of our approach. The key idea is that we first
+        perform a very weakly supervised segmentation to obtain pseudo
+        ground truth. Given the labels and different ranking measures
+        obtained from the network, we rank the unlabeled samples and pick them
+        accordingly for annotation. Those samples are then used to refine the entire network.}
     \label{fig:overview}        
    \end{figure}
 
