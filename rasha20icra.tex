@@ -393,7 +393,7 @@ The log-space in the previous approaches was used to ensure there is enough dive
 \begin{align}
 n_p(\bold{x}) &=  \left\lVert \bold{g_x} - \sum_{i=1}^S \frac{\left\langle \bold{g_i}, \bold{g_x} \right\rangle}{\left\langle \bold{g_i}, \bold{g_i} \right\rangle} \bold{g_i} \right\rVert,
 \end{align}
-where $\bold{x}$ is the image, $\bold{g_i}$ is the gradient of the $i$th out of $S$ previously selected samples, and $\bold{g_x}$ is the gradient of the current sample.
+where $\bold{x}$ is the image, $\bold{g_i}$ is the gradient of the $i$th sample out of $S$ previously selected samples, and $\bold{g_x}$ is the gradient of the current sample.
 
 We select samples one by one, each time sorting them according to this measure and choosing the one with the highest norm of the residual. To pick the first sample, we choose that with the highest norm of the gradient.
 
