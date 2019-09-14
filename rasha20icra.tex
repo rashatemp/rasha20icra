@@ -300,7 +300,11 @@ Du~\etal~\cite{du2018adapting} use gradient similarity to determine when an auxi
 
 Figure \ref{fig:overview} shows an overview of our framework. We use Bonnet~\cite{milioto2018bonnet} to train a model on the Bonn sugar beet dataset~\cite{chebrolu2017agricultural}. We then refine the trained model on other datasets by incrementally selecting batches of samples. The datasets differ in their crop/weed statistics and the images acquired with the cameras also differ in their illumination. Therefore, simply running the trained model to segment the vegetation in other fields does not work.
 
-We design novel gradient based approaches to select samples, one that is based on the norm of the network gradients, and the other on the norm of projected out gradients. In the experiments section we illustrate the performance of these methods and compare them to other approaches, including random selection of samples, selecting samples driven by the training loss, or driven by the uncertainty of the network.
+
+We design novel gradient based approaches to select samples, one that is based on the norm of the network gradients, and the other on the norm of projected out gradients. We also combine measures already provided by the network, namely uncertainty and loss, with log-scale ranking. In the experiments section we illustrate the performance of these methods and compare them to random sampling.
+
+
+%We design novel gradient based approaches to select samples, one that is based on the norm of the network gradients, and the other on the norm of projected out gradients. In the experiments section we illustrate the performance of these methods and compare them to other approaches, including random selection of samples, selecting samples driven by the training loss, or driven by the uncertainty of the network.
    
 %We experimented with different approaches to select samples. The baseline is randomly selecting samples for annotation in batches of 10. The other approaches include selecting samples driven by the training loss, the norm of the network gradients, and the norm of projected out gradients. In the experiment section we also show how the model performs when sample selection is guided by the uncertainty of the network.
 
