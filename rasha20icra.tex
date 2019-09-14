@@ -222,7 +222,6 @@ These systems allow autonomous robots to perform actuation in the fields without
 All of the works referenced, however, are based on supervised learning approaches which take large amounts of pixel-accurate hand-labeled images for training. 
 
 Accordingly, one of the main bottlenecks of these visual processing pipelines is the amount of expensive labeled training data required to deploy them in real agricultural fields, which often limits their applicability. In order to tackle this data starvation problem, we propose an active learning based solution.
-%Numerous works on general active learning have been presented in the community~\cite{settles2009active,guyon2011results,holub2008entropy}. Recently, the research topic of using active learning in combination with deep learning has received attention. We focus in this section on the different approaches that explored active learning within a deep learning framework.
 
 Numerous works on general active learning have been presented in the community~\cite{settles2009active,guyon2011results,holub2008entropy, yoo2019learning}. The most common measures for selecting samples are based on the uncertainty of the network~\cite{zhou2017fine, yang2017suggestive, gal2017deep, wang2017cost} and diversity~\cite{zhou2017fine, dutt2016active, kading2016active}.  Sener \etal~\cite{sener2017geometric} assert based on the experiments they performed that uncertainty based approaches are not effective for active learning with CNNs. They hypothesize that this is not due to the inaccurate estimate of uncertainty by the network, rather by the ineffectiveness of uncertainty based approaches to cover the space of image features.
 
@@ -281,7 +280,7 @@ Du \etal~\cite{du2018adapting} use gradient similarity to determine when an auxi
 %
 %Previous work, such as the Expected Gradient Length (EGL)~\cite{huang2016active, settles2008multiple}, has explored how changes in model parameters can be exploited for sample selection. However, differently it computes the expectation of the gradient norm over all possible annotations, which would be prohibitively expensive for pixel-wise semantic segmentation of images. We instead compute gradients from rough foreground/background segmentation.
 
-\section{Effective Sample Selection}
+\section{Our Approach to Effective Sample Selection}
 \label{sec:approach}
 
 Figure~\ref{fig:overview} shows an overview of our framework. We use Bonnet~\cite{milioto2018bonnet} to train a model on the Bonn sugar beet dataset~\cite{chebrolu2017agricultural}. We then refine the trained model on other datasets by incrementally selecting batches of samples. The datasets differ in their crop/weed statistics and the images acquired with the cameras also differ in their illumination. Therefore, simply running the trained model to segment the vegetation in other fields does not work.
@@ -393,7 +392,7 @@ In this section, we demonstrate the effectiveness of the approaches we designed 
 %
 %\subsection{Datasets}
 %
-The datasets we used were acquired with a Bosch Deepfield Robotics UGV in three different fields: Bonn~\cite{chebrolu2017agricultural} and Stuttgart in Germany, and Zurich in Switzerland. The datasets have weed and crop plants at different stages of growth and Figure~\ref{fig:datasets_images} shows sample images from the different datasets. The images vary in their illumination, soil type, and class statistics, hence the need for transfer learning. The images have been annotated into three classes:  weed, crop, and soil/misc.  Table~\ref{tab:datasets_stats} shows the number of images in each dataset and the ratio of foreground pixels. It can be clearly seen that there is a high imbalance of classes in the data.
+The datasets we used were acquired with a Bosch Deepfield Robotics UGV in three different fields: Bonn and Stuttgart in Germany, and Zurich in Switzerland. The datasets have weed and crop plants at different stages of growth and Figure~\ref{fig:datasets_images} shows sample images from the different datasets. The images vary in their illumination, soil type, and class statistics, hence the need for transfer learning. The images have been annotated into three classes:  weed, crop, and soil/misc.  Table~\ref{tab:datasets_stats} shows the number of images in each dataset and the ratio of foreground pixels. It can be clearly seen that there is a high imbalance of classes in the data.
 
 
 
@@ -460,21 +459,9 @@ The datasets we used were acquired with a Bosch Deepfield Robotics UGV in three 
     
     \begin{figure}
     \centering
-     \begin{subfigure}[b]{0.31\linewidth}
-    \includegraphics[width=\linewidth]{pics/unsupervised/img_masks_8mm_fromImages_frame256.png}
-   		\caption{input}
-		\label{unsup_img}    		
-   \end{subfigure}
-        \begin{subfigure}[b]{0.31\linewidth}
-    \includegraphics[width=\linewidth]{pics/unsupervised/gt_masks_8mm_fromImages_frame256_GroundTruth_iMap.png}
-   		\caption{ground truth}
-		\label{unsup_gt}    		
-   \end{subfigure}
-      \begin{subfigure}[b]{0.31\linewidth}
-    \includegraphics[width=\linewidth]{pics/unsupervised/lbl_masks_8mm_fromImages_frame256.png}
-   		\caption{pseudo ground truth}
-		\label{unsup_lbl}    		
-   \end{subfigure}
+    \includegraphics[width=0.32\linewidth]{pics/unsupervised/img_masks_8mm_fromImages_frame256.png}
+    \includegraphics[width=0.32\linewidth]{pics/unsupervised/gt_masks_8mm_fromImages_frame256_GroundTruth_iMap.png}
+    \includegraphics[width=0.32\linewidth]{pics/unsupervised/lbl_masks_8mm_fromImages_frame256.png}
     \caption{Foreground segmentation of vegetation provided by clustering. Note that only a rough segmentation is enough for our approach.}
     \label{fig:unsupervised_foreground}
 \end{figure}
