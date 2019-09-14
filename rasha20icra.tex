@@ -484,7 +484,7 @@ The experiments in this section are designed to show how the proposed sample sel
     \begin{figure}
     \centering
  %   \vspace{-1em}
-    \includegraphics[width=0.88\linewidth]{pics/pw_iou_stuttgart-crop.pdf}
+    \includegraphics[width=0.8\linewidth]{pics/pw_iou_stuttgart-crop.pdf}
    		\caption{Pixel-wise mean IoU on the Stuttgart dataset. Running the model without any new annotations yields an IoU of $0.34$. Running the model on the whole dataset yields an IoU of 0.79. Gradient-based approaches can reach $90\%$ of the fully supervised performance with 10 samples.}
 		\label{fig:iou_stuttgart}    		
 %    \vspace{1em}
@@ -493,7 +493,7 @@ The experiments in this section are designed to show how the proposed sample sel
 %   \begin{figure}
     \centering
  %   \vspace{-1em}
-    \includegraphics[width=0.88\linewidth]{pics/pw_iou_zurich-crop.pdf}
+    \includegraphics[width=0.8\linewidth]{pics/pw_iou_zurich-crop.pdf}
    		\caption{Pixel-wise mean IoU on the Zurich dataset. Running the model without any new annotations yields an IoU of $0.36$. Running the model on the whole dataset yields an IoU of 0.70. Gradient-based approaches can reach $77\%$ of the fully supervised performance with 10 samples.}
 		\label{fig:iou_zurich}    		
  %   \vspace{1em}
@@ -504,6 +504,28 @@ Figures \ref{fig:iou_stuttgart} and \ref{fig:iou_zurich} show the performance on
 A few observations can be made: the effect of the sampling method is stronger when only a few images are selected. As the model is trained on more and more samples, the accuracy plateaus as expected and the variation between the different methods decreases. It can be noted however that random sampling has a lower performance even with a greater number of images.
 
 When training the model with only a handful of images, the methods that take into account the impact of the samples on the weights lead to better generalization to the rest of the unseen data. In particular, ranking samples by projecting out gradients results in higher mIoU on both datasets. With 10 samples, which would amount to roughly $1\%$ of the training dataset size, we can achieve $90\%$ of the fully supervised performance (Table~\ref{tab:null_and_fully_supervised}) on the Stuttgart dataset, compared to $76\%$ with random selection. On the Zurich dataset, we can achieve $82\%$ of the fully supervised performance compared to $63\%$ with random selection.
+
+
+To further quantify the performance of our approach, we use the object-wise metric defined by Milioto \etal~\cite{milioto2018real}, where the accuracy is measured for objects larger than 50 pixels. Since the target application is weeding with agricultural robotics, this metric is more directly useful than pixel-wise performance.  
+Table~\ref{tab:object_wise} shows how our approach performs on the Stuttgart and Zurich datasets. Each row shows the mean accuracy when selecting 10 samples with different methods. For comparison, random sampling shown in the first column. Again, it can be seen that methods measuring the influence of the samples on the weights perform better.
+
+
+   \begin{table}
+ %          \vspace{1em}
+        \centering
+        \caption{Object-wise Performance on the Stuttgart and Zurich datasets. Each row shows the performance after selecting 10 samples with the different methods and refining the network. Running the model without any new annotations yields an accuracy of $0.15$ on Stuttgart and  $0.33$ on Zurich.}
+        \begin{tabular}{@{}cccccc@{}} 
+            \toprule
+            \makecell{Dataset} & \makecell{Random} & \makecell{Uncertainty} & \makecell{Loss} & \makecell{Gradient \\ Norm} & \makecell{Gradient \\ Proj.} \\ 
+            \midrule 
+          Stuttgart  & 0.6920 & 0.6437 & 0.7882 & 0.8040 & 0.8196 \\ \addlinespace
+
+          Zurich  & 0.7552 & 0.6943 & 0.7697 & 0.8354 & 0.8025 \\ 
+            \bottomrule
+        \end{tabular}
+        \label{tab:object_wise}
+    \end{table}
+   
 
 
 \subsection{Comparision to Other Baselines}
@@ -543,12 +565,9 @@ In the last row, we run an "oracle" experiment. We find the difference between t
     
     
     
-To further quantify the performance of our approach, we use the object-wise metric defined by Milioto \etal~\cite{milioto2018real}, where the accuracy is measured for objects larger than 50 pixels. Since the target application is weeding with agricultural robotics, this metric is more directly useful than pixel-wise performance.  
+\subsection{TODO: Find good name}
 
-
-Table~\ref{tab:object_wise} shows how our approach performs on the Stuttgart and Zurich datasets. Each row shows the mean accuracy when selecting 10 samples with different methods. The baseline is random sampling shown in the first column. Again, it can be seen that methods measuring the influence of the samples on the weights perform better.
-
-%As can be seen from the result,
+\todo{Explain with one sentence what this experiment is supposed to show}
 
 
 \todo{I do not fully understand this and also do not see in the figure the efect of that}
@@ -557,22 +576,6 @@ We combined the idea of gradient-based selection with two alternative approaches
 \todo{It would help to interpret the results and tell the reader what he/she should see.}
 
  
-   \begin{table}
- %          \vspace{1em}
-        \centering
-        \caption{Object-wise Performance on the Stuttgart and Zurich datasets. Each row shows the performance after selecting 10 samples with the different methods and refining the network. Running the model without any new annotations yields an accuracy of $0.15$ on Stuttgart and  $0.33$ on Zurich.}
-        \begin{tabular}{@{}cccccc@{}} 
-            \toprule
-            \makecell{Dataset} & \makecell{Random} & \makecell{Uncertainty} & \makecell{Loss} & \makecell{Gradient \\ Norm} & \makecell{Gradient \\ Proj.} \\ 
-            \midrule 
-    		  Stuttgart  & 0.6920 & 0.6437 & 0.7882 & 0.8040 & 0.8196 \\ \addlinespace
-
-    		  Zurich  & 0.7552 & 0.6943 & 0.7697 & 0.8354 & 0.8025 \\ 
-            \bottomrule
-        \end{tabular}
-        \label{tab:object_wise}
-    \end{table}
-   
 
 
        \begin{table}
@@ -616,7 +619,7 @@ We combined the idea of gradient-based selection with two alternative approaches
  \begin{figure}
    %  \vspace{-2em} 
     \centering
-    \includegraphics[width=0.95\linewidth]{pics/tsne_all-crop.pdf}
+    \includegraphics[width=0.8\linewidth]{pics/tsne_all-crop.pdf}
    		\caption{t-SNE of the images gradients on the Stuttgart dataset. Each point represents the 2-D embedding of the gradient vector. The first 10 samples selected by each method are shown in different colors.}
 		\label{fig:tsne}    		
   %   \vspace{-1em}
