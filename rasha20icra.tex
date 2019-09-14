@@ -323,7 +323,7 @@ We evaluate our different approaches by first training a network on the Bonn sug
 
 \subsection{Foreground masks}
 
-We first obtain foreground-background segmentation masks by clustering the values of the RGB channels. We run k-means to determine 20 cluster representatives from 10 randomly selected images. After viewing a single image that contains all 20 clusters, a human annotator chooses which clusters represent vegetation. In our experiments, it was enough to select two clusters. Therefore, the human annotation effort is merely a few seconds for one dataset. In accordance with previously used terminology \cite{zhang2018self}, we refer to this step as being very weakly supervised, since it only involves inspecting a single image. Figure  \ref{fig:unsupervised_foreground} shows an image, its ground truth and the foreground segmentation (pseudo ground truth) provided by clustering. It is an important finding from our experiments that a rough segmentation is sufficient for the purpose of selecting images for annotation. This makes our proposed gradient-based approach feasible in practice.
+We first obtain foreground-background segmentation masks by clustering the values of the RGB channels. We run k-means to determine 20 cluster representatives from 10 randomly selected images. After viewing a single image that contains all 20 clusters, a human annotator chooses which clusters represent vegetation. In our experiments, it was enough to select two clusters. Therefore, the human annotation effort is merely a few seconds for one dataset. In accordance with previously used terminology \cite{zhang2018self}, we refer to this step as being very weakly supervised, since it only involves inspecting a single image. Figure~\ref{fig:unsupervised_foreground} shows an image, its ground truth and the foreground segmentation (pseudo ground truth) provided by clustering. It is an important finding from our experiments that a rough segmentation is sufficient for the purpose of selecting images for annotation. This makes our proposed gradient-based approach feasible in practice.
 
 
 \subsection{Uncertainty}
@@ -389,9 +389,9 @@ We select samples one by one, each time sorting them according to this measure a
 \label{sec:exp}
 
 In this section, we demonstrate the effectiveness of the approaches we designed for active learning and evaluate the performance of the different sample selection methods on different datasets.
-%
-%\subsection{Datasets}
-%
+
+\subsection{Datasets}
+
 The datasets we used were acquired with a Bosch Deepfield Robotics UGV in three different fields: Bonn and Stuttgart in Germany, and Zurich in Switzerland. The datasets have weed and crop plants at different stages of growth and Figure~\ref{fig:datasets_images} shows sample images from the different datasets. The images vary in their illumination, soil type, and class statistics, hence the need for transfer learning. The images have been annotated into three classes:  weed, crop, and soil/misc.  Table~\ref{tab:datasets_stats} shows the number of images in each dataset and the ratio of foreground pixels. It can be clearly seen that there is a high imbalance of classes in the data.
 
 
@@ -462,12 +462,12 @@ The datasets we used were acquired with a Bosch Deepfield Robotics UGV in three 
     \includegraphics[width=0.32\linewidth]{pics/unsupervised/img_masks_8mm_fromImages_frame256.png}
     \includegraphics[width=0.32\linewidth]{pics/unsupervised/gt_masks_8mm_fromImages_frame256_GroundTruth_iMap.png}
     \includegraphics[width=0.32\linewidth]{pics/unsupervised/lbl_masks_8mm_fromImages_frame256.png}
-    \caption{Foreground segmentation of vegetation provided by clustering. Note that only a rough segmentation is enough for our approach.}
+    \caption{Left: Input image; Middle: Semantic segmentation; Right: Foreground segmentation of vegetation provided by clustering. Note that only a rough segmentation is enough for our approach.}
     \label{fig:unsupervised_foreground}
 \end{figure}
 
 
-We follow the approach of \cite{milioto2018real} and split the new dataset into three sets: 40\% for training, 10\% for validation, and 50\% for testing. The samples are picked from the training set. All experiments were conducted on four Nvidia Titan X GPUs.  
+%We follow the approach of \cite{milioto2018real} and split the new dataset into three sets: 40\% for training, 10\% for validation, and 50\% for testing. The samples are picked from the training set. All experiments were conducted on four Nvidia Titan~X GPUs.  
 
 
 \subsection{Segmentation Framework} \label{sec:seg_framework}
