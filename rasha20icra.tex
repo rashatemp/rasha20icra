@@ -571,17 +571,22 @@ This implies that the gradient-based approaches are bounded by this performance.
     
     
     
-\subsection{TODO: Find good name}
+%\subsection{TODO: Find good name}
+%
+%\todo{Explain with one sentence what this experiment is supposed to show}
+%
+%
+%\todo{I do not fully understand this and also do not see in the figure the efect of that}
+%We combined the idea of gradient-based selection with two alternative approaches to achieving diversity in the selected images: Picking on a log scale, or projecting out gradients that have been selected previously. In our experiments, both strategies performed well (]\todo{How do I see that?}). To further analyze them, we plot the t-distributed Stochastic Neighbor Embedding (t-SNE) of the gradients in Figure~\ref{fig:tsne}. Each circle denotes the 2-D embedding of the gradient of a single image before picking the first 10 samples. Samples selected by each method are shown in different colors. We found that both gradient and loss based approaches favor samples that have gradients clustered at the bottom of the plot \todo{What does this mean/imply?}. In our future work we plan to investigate this further.\todo{?}
+%
+%\todo{It would help to interpret the results and tell the reader what he/she should see.}
 
-\todo{Explain with one sentence what this experiment is supposed to show}
 
+\subsection{Inspecting t-SNE of Samples Gradients}
 
-\todo{I do not fully understand this and also do not see in the figure the efect of that}
-We combined the idea of gradient-based selection with two alternative approaches to achieving diversity in the selected images: Picking on a log scale, or projecting out gradients that have been selected previously. In our experiments, both strategies performed well (]\todo{How do I see that?}). To further analyze them, we plot the t-distributed Stochastic Neighbor Embedding (t-SNE) of the gradients in Figure~\ref{fig:tsne}. Each circle denotes the 2-D embedding of the gradient of a single image before picking the first 10 samples. Samples selected by each method are shown in different colors. We found that both gradient and loss based approaches favor samples that have gradients clustered at the bottom of the plot \todo{What does this mean/imply?}. In our future work we plan to investigate this further.\todo{?}
-
-\todo{It would help to interpret the results and tell the reader what he/she should see.}
-
- 
+To further analyze the ranking methods and inspect potential patterns in the different sampling approaches, we plot the t-distributed Stochastic Neighbor Embedding (t-SNE) of the gradients in Figure~\ref{fig:tsne}. Each circle denotes the 2-D embedding of the gradient of a single image before picking the first 10 samples. Samples selected by each method are shown in different colors.
+As explained in Section \ref{sec:grad_norm} and \ref{sec:grad_proj}, we combined the idea of gradient-based selection with two alternative approaches to achieving diversity in the selected images: picking on a log scale, or projecting out gradients that have been selected previously. In our experiments, both strategies performed well (see \figref{fig:iou_stuttgart} and \figref{fig:iou_zurich}). 
+When inspecting the gradients of the samples selected, we found that the strongest gradients cluster together, near the bottom left. Additionally, the gradient projection method selects many points at the boundary of the distribution, suggesting that it might be improved further by adding a mechanism to ensure that selected images are representative of a larger subset in the overall dataset.
 
 
        \begin{table}
