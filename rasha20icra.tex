@@ -200,7 +200,7 @@ infer the labels on another.
 \end{figure}
 
 The main contribution of this work is a new active learning strategy that
-intelligently pick images taken under new conditions to re-train an existing network.
+intelligently picks images taken under new conditions to re-train an existing network.
 We start by picking samples based 
 on the uncertainty of their predictions, and separately on the network loss with respect 
 to pseudo labels. We add diversity to the sample selection using a log-space ranking.
@@ -209,7 +209,7 @@ and pick samples accordingly.
 Our strategy is based  on the observation that given a trained model and unseen
 samples from  a different domain, the samples that the network performs most
 poorly on, especially at the  beginning, will have the largest weight
-gradients and consequently the largest impact on the  weights. This strategy might appear to be circular, since computing gradients already requires class labels at a stage where are still selecting images for labeling.  We circumvent this by using pseudo ground truth that we obtain with very weakly supervised segmentation. Our approach
+gradients and consequently the largest impact on the  weights. This strategy might appear to be circular, since computing gradients already requires class labels at a stage where we are still selecting images for labeling.  We circumvent this by using pseudo ground truth that we obtain with very weakly supervised segmentation. Our approach
 selects samples in batches, each time refining the network, then computing a
 new  ranking of the unlabeled data. The best samples are then selected and the
 network is re-trained. To compute the real gradients, corresponding ground
@@ -340,7 +340,7 @@ we train our model on the Bonn sugar beet dataset~\cite{chebrolu2017agricultural
 %We design these novel gradient-based approaches to select samples, one that is based on the norm of the network gradients, and the other on the norm of projected out gradients. We also combine measures already provided by the network, namely uncertainty and loss, with log-scale ranking. 
 
 
-In this section, we describe four different approaches to sample selection for active learning. We combine measures already provided by the network, namely uncertainty and loss, with log-scale ranking (see \secref{ssec:unc}), loss (see \secref{ssec:loss}). We also design novel gradient-based approaches to select samples, one that is based on the norm of the network gradients, and the other on the norm of projected out gradients (see \secref{ssec:normgrad} and \secref{ssec:gradproj}).
+In this section, we describe four different approaches to sample selection for active learning. We combine measures already provided by the network, namely uncertainty and loss, with log-scale ranking (see \secref{ssec:unc} and \secref{ssec:loss}). We also design novel gradient-based approaches to select samples, one that is based on the norm of the network gradients, and the other on the norm of projected out gradients (see \secref{ssec:normgrad} and \secref{ssec:gradproj}).
 
 
 
@@ -409,7 +409,7 @@ u(\bold{x}) &= \frac{1}{N} \sum_{i=1}^N \max_c p(c  \mid  x_i),
 \noindent
 where $x_i$ is pixel $i$ in image $\bold{x}$, $c$ is the predicted class and $N$ is the number of pixels in the image.
 
-We then sort the images based on the computed uncertainty measure in a descending order and pick the images accordingly to refine the network on a new dataset. We found that it is helpful for the network to have diverse samples, especially because our goal is to train using only few annotated images. In contrast to standard approaches using the uncertainty for sampling, we therefore rank the samples on a log-space scale as follows: We generate a string of numbers, starting from zero, that are spaced evenly on a log scale. These numbers are then used as the indices of the samples to be selected. Since the samples are sorted, this approach would more heavily select those that have higher uncertainty values while not completely discarding images that the network is more confident of.
+We then sort the images based on the computed uncertainty measure in a descending order and pick the images accordingly to refine the network on a new dataset. We found that it is helpful for the network to have diverse samples, especially because our goal is to train using only few annotated images. In contrast to standard approaches using the uncertainty for sampling, we rank the samples on a log-space scale as follows: We generate a string of numbers, starting from zero, that are spaced evenly on a log scale. These numbers are then used as the indices of the samples to be selected. Since the samples are sorted, this approach would more heavily select those that have higher uncertainty values while not completely discarding images that the network is more confident of.
 
 
 
