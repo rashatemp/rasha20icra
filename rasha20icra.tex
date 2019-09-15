@@ -170,6 +170,7 @@ infer the labels on another.
       denotes weed). As can be seen, the appearance differs
       substantially.}
     \label{fig:datasets_images}
+      \vspace{-2em}
 \end{figure}
 
 The main contribution of this work is a new active learning strategy that
@@ -224,7 +225,7 @@ Accordingly, one of the main bottlenecks of these visual processing pipelines is
 
 Numerous works on general active learning have been presented in the community~\cite{settles2009active,guyon2011results,holub2008entropy, yoo2019learning}. The most common measures for selecting samples are based on the uncertainty of the network~\cite{zhou2017fine, yang2017suggestive, gal2017deep, wang2017cost} and diversity~\cite{zhou2017fine, dutt2016active, kading2016active}.  Sener \etal~\cite{sener2017geometric} assert based on the experiments they performed that uncertainty based approaches are not effective for active learning with CNNs. They hypothesize that this is not due to the inaccurate estimate of uncertainty by the network, rather to the ineffectiveness of uncertainty based approaches to cover the space of image features.
 
-The Expected Model Output Change Principle (EMOC) developed by Freytag \etal~\cite{freytag2014selecting} tries to avoid selecting samples that are redundant and K{\"a}ding \etal~\cite{kading2016active} follow this approach with deep neural networks. This principle measures how a model would perform with and without the candidate sample. Given that the labels are unknown, a marginalization over the possible labels is needed. This marginalization however can be expensive when having a large number of classes, so the authors use maximum a-posteriori approximation instead and use the class with the highest probability prediction.
+The Expected Model Output Change Principle (EMOC) developed by Freytag \etal~\cite{freytag2014selecting} tries to avoid selecting samples that are redundant and K{\"a}ding \etal~\cite{kading2016active} follow this approach with deep neural networks. This principle measures how a model would perform with and without the candidate sample. Given that the labels are unknown, a marginalization over the possible labels is needed. %This marginalization however can be expensive when having a large number of classes, so the authors use maximum a-posteriori approximation instead and use the class with the highest probability prediction.
 
 Uncertainty estimation for active learning can be performed using Monte-Carlo dropout as in~\cite{gal2017deep} or with an ensemble of deep networks. Beluch \etal~\cite{beluch2018power} compare both of these approaches on different datasets. They found that an ensemble of deep classifiers has a superior performance even with a smaller number of models. They conclude that Monte-Carlo dropout approaches suffer from a lower diversity and a smaller model capacity.
 
@@ -288,7 +289,8 @@ Du \etal~\cite{du2018adapting} use gradient similarity to determine when an auxi
         ground truth. Given the labels and different ranking measures
         obtained from the network, we rank the unlabeled samples and pick them
         accordingly for annotation. Those samples are then used to refine the entire network.}
-    \label{fig:overview}        
+    \label{fig:overview}     
+      \vspace{-0.5em}   
    \end{figure}
 
 
@@ -335,6 +337,7 @@ To compute the strategies explained in the following subsections, we use what we
       provided by k-means clustering. Note that only such a rough
       segmentation as pseudo ground truth is enough for our approach.}
     \label{fig:unsupervised_foreground}
+      \vspace{-2em}
 \end{figure}
 
 
@@ -454,7 +457,7 @@ The datasets we used were acquired with a Bosch Deepfield Robotics UGV in three 
             \bottomrule
         \end{tabular}
         \label{tab:datasets_stats}
-    %       \vspace{10em}
+           \vspace{-2em}
     \end{table}
      
 
@@ -485,22 +488,22 @@ The experiments in this section are designed to show how the proposed sample sel
 
     \begin{figure}
     \centering
- %   \vspace{-1em}
+    \vspace{-1em}
  %   \includegraphics[width=0.8\linewidth]{pics/pw_iou_stuttgart-crop.pdf}
     \includegraphics[width=0.9\linewidth]{pics/pw_iou_stuttgart_wentropy.pdf}
    		\caption{Pixel-wise mean IoU on the Stuttgart dataset. Running the model without any new annotations yields an IoU of $0.34$. Running the model on the whole dataset yields an IoU of 0.79. Gradient-based approaches can reach $90\%$ of the fully supervised performance with 10 samples.}
 		\label{fig:iou_stuttgart}    		
 %    \vspace{1em}
 %   \end{figure}
-    \vspace{1.3em}
+ %   \vspace{1.3em}
 %   \begin{figure}
     \centering
- %   \vspace{-1em}
+    \vspace{-0.1em}
  %    \includegraphics[width=0.8\linewidth]{pics/pw_iou_zurich-crop.pdf}
      \includegraphics[width=0.9\linewidth]{pics/pw_iou_zurich_wentropy.pdf}
    		\caption{Pixel-wise mean IoU on the Zurich dataset. Running the model without any new annotations yields an IoU of $0.36$. Running the model on the whole dataset yields an IoU of 0.70. Gradient-based approaches can reach $77\%$ of the fully supervised performance with 10 samples.}
 		\label{fig:iou_zurich}    		
- %   \vspace{1em}
+    \vspace{-1.9em}
    \end{figure}
    
     
@@ -528,6 +531,7 @@ Table~\ref{tab:object_wise} shows how our approach performs on the Stuttgart and
             \bottomrule
         \end{tabular}
         \label{tab:object_wise}
+          \vspace{-2em}
     \end{table}
    
 
@@ -592,7 +596,7 @@ When inspecting the gradients of the samples selected, we found that the stronge
        \begin{table}
         \vspace{1em}
         \centering
-      \caption{Precision and recall on the Stuttgart dataset after selecting the first 10 samples. The first table shows the pixel-wise performance and the second table shows the object-wise performance. The highest values along a column are in bold and the lowest in italics. The uncertainty-based method shows a large imbalance in performance on the two classes.}
+      \caption{Precision and recall on the Stuttgart dataset after selecting the first 10 samples. The first table shows the pixel-wise perf. and the second table shows the object-wise perf.. The highest values along a column are in bold and the lowest in italics. The uncertainty-based method shows a large imbalance in performance on the two classes.}
         \begin{tabular}{@{}lcccc@{}} 
             \toprule
             & \multicolumn{2}{c}{Precision} & \multicolumn{2}{c}{Recall}\\ 
@@ -611,10 +615,10 @@ When inspecting the gradients of the samples selected, we found that the stronge
            ~\\[1mm]
                 \begin{tabular}{@{}lcccc@{}} 
             \toprule
-            & \multicolumn{2}{c}{Precision} & \multicolumn{2}{c}{Recall}\\ 
-           \cmidrule{2-5} 
-               & Weed & Crop & Weed & Crop \\ 
-            \midrule 
+%            & \multicolumn{2}{c}{Precision} & \multicolumn{2}{c}{Recall}\\ 
+%           \cmidrule{2-5} 
+%               & Weed & Crop & Weed & Crop \\ 
+%            \midrule 
     		  Random & \textit{0.8723} & 0.5740 & 0.6587 & \textit{0.6474}  \\ \addlinespace
     		  Entropy & 0.8851 & 0.5238 & 0.6122 & 0.7399  \\ \addlinespace
     		  Uncertainty Log & \textbf{0.9476} & \textit{0.4586} & \textit{0.4919} & \textbf{0.8854}  \\ \addlinespace
@@ -625,6 +629,7 @@ When inspecting the gradients of the samples selected, we found that the stronge
         \end{tabular}
  %       \label{tab:object_wise_10_stuttgart}
         \label{tab:performance_10_stuttgart}
+          \vspace{-2em}
     \end{table}
    
     
@@ -635,7 +640,7 @@ When inspecting the gradients of the samples selected, we found that the stronge
     \includegraphics[width=0.8\linewidth]{pics/tsne_all-crop.pdf}
    		\caption{t-SNE of the images gradients on the Stuttgart dataset. Each point represents the 2-D embedding of the gradient vector. The first 10 samples selected by each method are shown in different colors.}
 		\label{fig:tsne}    		
-  %   \vspace{-1em}
+     \vspace{-2em}
    \end{figure}
    
   
