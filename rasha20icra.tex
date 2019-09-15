@@ -84,7 +84,7 @@ of semantic segmentation with the goal of reducing the  human labeling effort.
 Our application is agricultural robotics  and we focus on the task of
 distinguishing between crop and weed plants from image data. A key challenge in this
 application is the  transfer of an existing semantic segmentation CNN to a new
-field, in which growth stage, weeds, soil, and weather condistion differ. 
+field, in which growth stage, weeds, soil, and weather conditions differ. 
 We propose a novel approach that, given a trained model on one field together with 
 rough foreground/background segmentation,
 refines the network on a substantially different field  providing an effective
@@ -94,7 +94,8 @@ weights of the network and select them accordingly for annotation. The other ran
 use the loss and uncertainty measures provided by the network then ranks samples on a log-scale to ensure diversity.
 We evaluated our approach on two challenging  datasets from the agricultural
 robotics domain and show that we achieve a higher accuracy with a  smaller
-number of samples compared to randomly selecting samples for annotation, which consequently reduces the required human labeling  effort.
+number of samples compared to randomly selecting samples for annotation as
+well as entropy based sampling, which consequently reduces the required human labeling  effort.
 
 \end{abstract} 
 
@@ -188,7 +189,7 @@ network is re-trained. To compute the real gradients, corresponding ground
 truth data is needed. Thus, in our approach, we approximate the ground truth as the result of unsupervised segmentation to estimate the gradient.  We
 evaluated our framework using three distinctive sugar beet datasets~\cite{chebrolu2017agricultural} that have different characteristics.  Our results indicate that our method produces a
 higher accuracy on the datasets with a fewer  number of samples compared to
-random sampling for annotation.
+random sampling for annotation as well as entropy based sampling.
 
 
  
@@ -431,7 +432,7 @@ We select samples one by one, each time sorting them according to this measure a
 \section{Experimental Evaluation}
 \label{sec:exp}
 
-In this section, we demonstrate the effectiveness of the approaches we designed for active learning and evaluate the performance of the different sample selection methods on different datasets.
+In this section, we demonstrate the effectiveness of the approaches we designed for active learning and evaluate the performance of the different sample selection methods on different datasets, and compare them to random and entropy based approaches.
 
 \subsection{Datasets}
 
@@ -485,7 +486,8 @@ The experiments in this section are designed to show how the proposed sample sel
     \begin{figure}
     \centering
  %   \vspace{-1em}
-    \includegraphics[width=0.8\linewidth]{pics/pw_iou_stuttgart-crop.pdf}
+ %   \includegraphics[width=0.8\linewidth]{pics/pw_iou_stuttgart-crop.pdf}
+    \includegraphics[width=0.9\linewidth]{pics/pw_iou_stuttgart_wentropy.pdf}
    		\caption{Pixel-wise mean IoU on the Stuttgart dataset. Running the model without any new annotations yields an IoU of $0.34$. Running the model on the whole dataset yields an IoU of 0.79. Gradient-based approaches can reach $90\%$ of the fully supervised performance with 10 samples.}
 		\label{fig:iou_stuttgart}    		
 %    \vspace{1em}
@@ -494,7 +496,8 @@ The experiments in this section are designed to show how the proposed sample sel
 %   \begin{figure}
     \centering
  %   \vspace{-1em}
-    \includegraphics[width=0.8\linewidth]{pics/pw_iou_zurich-crop.pdf}
+ %    \includegraphics[width=0.8\linewidth]{pics/pw_iou_zurich-crop.pdf}
+     \includegraphics[width=0.9\linewidth]{pics/pw_iou_zurich_wentropy.pdf}
    		\caption{Pixel-wise mean IoU on the Zurich dataset. Running the model without any new annotations yields an IoU of $0.36$. Running the model on the whole dataset yields an IoU of 0.70. Gradient-based approaches can reach $77\%$ of the fully supervised performance with 10 samples.}
 		\label{fig:iou_zurich}    		
  %   \vspace{1em}
@@ -508,20 +511,20 @@ When training the model with only a handful of images, the methods that take int
 
 
 To further quantify the performance of our approach, we use the object-wise metric defined by Milioto \etal~\cite{milioto2018real}, where the accuracy is measured for objects larger than 50 pixels. Since the target application is weeding with agricultural robotics, this metric is more directly useful than pixel-wise performance.  
-Table~\ref{tab:object_wise} shows how our approach performs on the Stuttgart and Zurich datasets. Each row shows the mean accuracy when selecting 10 samples with different methods. For comparison, random sampling is shown in the first column. Again, it can be seen that methods measuring the influence of the samples on the weights perform better.
+Table~\ref{tab:object_wise} shows how our approach performs on the Stuttgart and Zurich datasets. Each row shows the mean accuracy when selecting 10 samples with different methods. For comparison, random and entropy based sampling are shown in the first and second columns respectively. Again, it can be seen that methods measuring the influence of the samples on the weights perform better.
 
 
    \begin{table}
  %          \vspace{1em}
         \centering
         \caption{Object-wise Performance on the Stuttgart and Zurich datasets. Each row shows the performance after selecting 10 samples with the different methods and refining the network. Running the model without any new annotations yields an accuracy of $0.15$ on Stuttgart and  $0.33$ on Zurich.}
-        \begin{tabular}{@{}cccccc@{}} 
+        \begin{tabular}{@{}ccccccc@{}} 
             \toprule
-            \makecell{Dataset} & \makecell{Random} & \makecell{Uncertainty} & \makecell{Loss} & \makecell{Gradient \\ Norm} & \makecell{Gradient \\ Proj.} \\ 
+            \makecell{Dataset} & \makecell{Random} & \makecell{Entropy} & \makecell{Uncert. \\ Log} & \makecell{Loss \\ Log} & \makecell{Grad. \\ Norm} & \makecell{Grad. \\ Proj.} \\ 
             \midrule 
-          Stuttgart  & 0.6920 & 0.6437 & 0.7882 & 0.8040 & 0.8196 \\ \addlinespace
+          Stuttgart  & 0.6920 & 0.6890 & 0.6437 & 0.7882 & 0.8040 & 0.8196 \\ \addlinespace
 
-          Zurich  & 0.7552 & 0.6943 & 0.7697 & 0.8354 & 0.8025 \\ 
+          Zurich  & 0.7552 & 0.7879 & 0.6943 & 0.7697 & 0.8354 & 0.8025 \\ 
             \bottomrule
         \end{tabular}
         \label{tab:object_wise}
@@ -529,7 +532,7 @@ Table~\ref{tab:object_wise} shows how our approach performs on the Stuttgart and
    
 
 
-\subsection{Comparision to Other Baselines}
+\subsection{Comparison to Other Baselines}
     
 To gain more insight into what our baselines are, we ran additional experiments with the results shown in Table~\ref{tab:add_baselines}. 
 The first row shows the performance when selecting samples that have the highest entropy:
@@ -539,13 +542,13 @@ e(\bold{x}) &= -\frac{1}{N} \sum_{i=1}^N \sum_{c} p(c \mid x_i) \log p(c \mid x_
 \noindent
 where $x_i$ is pixel $i$ in image $\bold{x}$, $c$ is the class and $N$ is the number of pixels in the image.
 
-This measure is frequently used in the literature~\cite{chakraborty2015active, zhou2017fine} for active learning. Although it finds samples that the network is uncertain of, it needs to be combined with a measure that provides some diversity in the sample selection. 
+This measure is frequently used in the literature~\cite{chakraborty2015active, zhou2017fine} for active learning. Although it finds samples that the network is uncertain of, it needs to be combined with a measure that provides some diversity in the sample selection. Figures \ref{fig:iou_stuttgart} and \ref{fig:iou_zurich} show the entropy performance when selecting higher number of samples. We note that combining our log-based selection with a similar uncertainty measure to provide diversity yields a better performance as can be seen in the figures.
 
 %In the second row, we run k-means on the gradients to find clusters that might be representative of the training samples. We found that a number of those clusters had very few samples so a more suitable clustering technique might be needed. 
 
 In the second row, we ran an experiment where we trained the model with the pseudo ground truth first and picked samples randomly afterwards. We found that it performs worse than when picking random samples directly. Although pre-training with the pseudo ground truth allows the network to distinguish foreground vegetation from background, the task at hand is to learn three classes and more importantly distinguish crop from weed. Therefore for all experiments, we refine the model without pre-training on the foreground masks.
 
-In the last row, we run an "oracle" experiment. We find the difference between the parameters of the model without any refinement and the parameters of the fully supervised model. We then find samples with gradients that align with the parameters difference. This experiment is not intended for sample selection, rather to know if the framework had complete knowledge of how the gradients should look like, would it be able to pick better samples. We found that the oracle performance is similar to our gradient-based approaches after seing 10 new samples. This means that \todo{Complete stentence}.
+In the last row, we run an "oracle" experiment. We find the difference between the parameters of the model without any refinement and the parameters of the fully supervised model. We then find samples with gradients that align with the parameters difference. This experiment is not intended for sample selection, rather to know if the framework had complete knowledge of how the gradients should look like, would it be able to pick better samples. We found that the oracle performance is similar to our gradient-based approaches after seeing 10 new samples. This means that \todo{Complete stentence}.
 
         \begin{table}
            \vspace{1em}
@@ -582,16 +585,17 @@ We combined the idea of gradient-based selection with two alternative approaches
        \begin{table}
         \vspace{1em}
         \centering
-      \caption{Precision and recall on the Stuttgart dataset after selecting the first 10 samples. The first table shows the pixel-wise performance and the second table shows the object-wise performance. The highest values are in bold and the lowest in italics. The uncertainty-based method shows a large imbalance in performance on the two classes.}
+      \caption{Precision and recall on the Stuttgart dataset after selecting the first 10 samples. The first table shows the pixel-wise performance and the second table shows the object-wise performance. The highest values along a column are in bold and the lowest in italics. The uncertainty-based method shows a large imbalance in performance on the two classes.}
         \begin{tabular}{@{}lcccc@{}} 
             \toprule
             & \multicolumn{2}{c}{Precision} & \multicolumn{2}{c}{Recall}\\ 
            \cmidrule{2-5} 
                & Weed & Crop & Weed & Crop \\ 
             \midrule 
-    		  Random & \textit{0.4095} & 0.7278 & 0.4851 & \textit{0.6946}  \\ \addlinespace
-    		  Uncertainty & 0.5580 & \textit{0.6646} & \textit{0.2711} & \textbf{0.8880}  \\ \addlinespace
-    		  Loss & 0.5331 & 0.8025 & 0.6179 & 0.8112  \\ \addlinespace
+    		  Random & \textit{0.4095} & 0.7278 & 0.4851 & 0.6946  \\ \addlinespace
+    		  Entropy & 0.4158 & 0.7334 & 0.4786 & \textit{0.5894}  \\ \addlinespace
+    		  Uncertainty Log & 0.5580 & \textit{0.6646} & \textit{0.2711} & \textbf{0.8880}  \\ \addlinespace
+    		  Loss Log & 0.5331 & 0.8025 & 0.6179 & 0.8112  \\ \addlinespace
     		  Gradient Norm & \textbf{0.5970} & 0.8259 & 0.6136 & 0.8402  \\ \addlinespace
     		  Gradient Projection & 0.5745 & \textbf{0.8365} & \textbf{0.6564} & 0.8212  \\ 
             \bottomrule
@@ -605,8 +609,9 @@ We combined the idea of gradient-based selection with two alternative approaches
                & Weed & Crop & Weed & Crop \\ 
             \midrule 
     		  Random & \textit{0.8723} & 0.5740 & 0.6587 & \textit{0.6474}  \\ \addlinespace
-    		  Uncertainty & \textbf{0.9476} & \textit{0.4586} & \textit{0.4919} & \textbf{0.8854}  \\ \addlinespace
-    		  Loss & 0.9005 & 0.6898 & 0.7811 & 0.7351  \\ \addlinespace
+    		  Entropy & 0.8851 & 0.5238 & 0.6122 & 0.7399  \\ \addlinespace
+    		  Uncertainty Log & \textbf{0.9476} & \textit{0.4586} & \textit{0.4919} & \textbf{0.8854}  \\ \addlinespace
+    		  Loss Log & 0.9005 & 0.6898 & 0.7811 & 0.7351  \\ \addlinespace
     		  Gradient Norm & 0.9090 & \textbf{0.7390} & 0.7970 & 0.7536  \\ \addlinespace
     		  Gradient Projection & 0.9030 & 0.7308 & \textbf{0.8289} & 0.7375  \\ 
             \bottomrule
@@ -664,7 +669,8 @@ We evaluated  the performance gain of our gradient-and log based
 approaches on two agricultural  datasets for weed detection. The datasets 
 reveal different characteristics from the dataset on which the network was pretrained.
 Our results show the effectiveness of our method as it produces higher semantic segmentation
-accuracies with a smaller number of training samples, compared to random sampling. As a result
+accuracies with a smaller number of training samples, compared to random sampling as
+well as entropy based sampling. As a result
 of that, the effort in human annotation is reduced without compromising
 performance.
  
