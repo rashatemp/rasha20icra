@@ -78,8 +78,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
 Annotated datasets are essential for supervised
-learning. However, annotating large datasets to train deep neural
-networks that perform well is a tedious and time-intensive task.
+learning. However, annotating large datasets  is a tedious and time-intensive task.
 This paper addresses active learning in the context of semantic
 segmentation with the goal of reducing the human labeling
 effort. Our application is agricultural robotics and we focus on
@@ -91,17 +90,18 @@ propose a novel approach that, given a trained model on one
 field together with rough foreground segmentation,
 refines the network on a substantially different field providing an
 effective method of selecting samples to annotate for supporting
-the transfer. Two of our ranking approaches take into account
-the influence of the so far unlabeled samples on the weights of
-the network and select them accordingly for annotation. The
-other ranking approaches use the loss and uncertainty measures
-provided by the network then ranks samples on a log-scale to
-ensure diversity. We evaluated our approach on two challenging
+the transfer. 
+%Two of our ranking approaches take into account
+%the influence of the so far unlabeled samples on the weights of
+%the network and select them accordingly for annotation. The
+%other ranking approaches use the loss and uncertainty measures
+%provided by the network then ranks samples on a log-scale to
+%ensure diversity. 
+We evaluated our approach on two challenging
 datasets from the agricultural robotics domain and show that
 we achieve a higher accuracy with a smaller number of samples
 compared to random sampling as well as entropy based sampling, which consequently reduces the
 required human labeling effort.
-
 \end{abstract} 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -308,7 +308,7 @@ Du \etal~\cite{du2018adapting} use gradient similarity to determine when an auxi
     \begin{figure}
     \vspace{1em}
     \centering
-    \includegraphics[width=\linewidth]{pics/output_system_overview.pdf}
+    \includegraphics[width=\linewidth]{pics/output_system_overview-crop.pdf}
       \caption{Overview of our approach. The key idea is that we first
         perform a very weakly supervised segmentation to obtain pseudo
         ground truth. Given the labels and different ranking measures
@@ -407,7 +407,7 @@ u(\bold{x}) &= \frac{1}{N} \sum_{i=1}^N \max_c p(c  \mid  x_i),
 \noindent
 where $x_i$ is pixel $i$ in image $\bold{x}$, $c$ is the predicted class and $N$ is the number of pixels in the image.
 
-We then sort the images based on the computed uncertainty measure in a descending order and pick the images accordingly to refine the network on a new dataset. We found that it is helpful for the network to have diverse samples, especially because our goal is to train using only few annotated images. We therefore rank the samples on a log-space scale as follows: We generate a string of numbers, starting from zero, that are spaced evenly on a log scale. These numbers are then used as the indices of the samples to be selected. Since the samples are sorted, this approach would more heavily select those that have higher uncertainty values while not completely discarding images that the network is more confident of.
+We then sort the images based on the computed uncertainty measure in a descending order and pick the images accordingly to refine the network on a new dataset. We found that it is helpful for the network to have diverse samples, especially because our goal is to train using only few annotated images. In contrast to standard approaches using the uncertainty for sampling, we therefore rank the samples on a log-space scale as follows: We generate a string of numbers, starting from zero, that are spaced evenly on a log scale. These numbers are then used as the indices of the samples to be selected. Since the samples are sorted, this approach would more heavily select those that have higher uncertainty values while not completely discarding images that the network is more confident of.
 
 
 
@@ -416,7 +416,8 @@ We then sort the images based on the computed uncertainty measure in a descendin
 
 The loss of the network is an indication of the segmentation error. Given that training neural networks with backpropagation is driven by the loss, it also provides a useful cue as to which samples the network will most benefit from. We compute the focal loss \cite{DBLP:conf/iccv/LinGGHD17} based on the pseudo ground truth.
 
-The images are sorted based on this loss in a descending order and selected on a log-scale ranking to encourage diversity as explained earlier.
+Again, different to typical approaches of active learning, which exploit the loss for sample selection, we sort
+the images   based on this loss in a descending order and selected on a log-scale ranking to encourage diversity as explained in the previous subsection.
 
 % consisting of a foreground-background segmentation that we achieve using k-means clustering on the RGB channels.
 
@@ -514,9 +515,8 @@ The experiments in this section are designed to show how the proposed sample sel
 
     \begin{figure}
     \centering
-    \vspace{-1em}
  %   \includegraphics[width=0.8\linewidth]{pics/pw_iou_stuttgart-crop.pdf}
-    \includegraphics[width=0.9\linewidth]{pics/pw_iou_stuttgart_wentropy.pdf}
+    \includegraphics[width=0.8\linewidth]{pics/pw_iou_stuttgart_wentropy-crop.pdf}
    		\caption{Pixel-wise mean IoU on the Stuttgart dataset. Running the model without any new annotations yields an IoU of $0.34$. Running the model on the whole dataset yields an IoU of 0.79. Gradient-based approaches can reach $90\%$ of the fully supervised performance with 10 samples.}
 		\label{fig:iou_stuttgart}    		
 %    \vspace{1em}
@@ -524,12 +524,12 @@ The experiments in this section are designed to show how the proposed sample sel
  %   \vspace{1.3em}
 %   \begin{figure}
     \centering
-    \vspace{-0.1em}
+    \vspace{4mm}
  %    \includegraphics[width=0.8\linewidth]{pics/pw_iou_zurich-crop.pdf}
-     \includegraphics[width=0.9\linewidth]{pics/pw_iou_zurich_wentropy.pdf}
+     \includegraphics[width=0.8\linewidth]{pics/pw_iou_zurich_wentropy-crop.pdf}
    		\caption{Pixel-wise mean IoU on the Zurich dataset. Running the model without any new annotations yields an IoU of $0.36$. Running the model on the whole dataset yields an IoU of 0.70. Gradient-based approaches can reach $77\%$ of the fully supervised performance with 10 samples.}
 		\label{fig:iou_zurich}    		
-    \vspace{-1.9em}
+%    \vspace{-1.9em}
    \end{figure}
    
     
@@ -546,7 +546,7 @@ Table~\ref{tab:object_wise} shows how our approach performs on the Stuttgart and
    \begin{table}
            \vspace{1em}
         \centering
-        \caption{Object-wise Performance on the Stuttgart and Zurich datasets. Each row shows the performance after selecting 10 samples with the different methods and refining the network. Running the model without any new annotations yields an accuracy of $0.15$ on Stuttgart and  $0.33$ on Zurich.}
+        \caption{Object-wise Performance on both datasets. Each row shows the performance after selecting 10 samples with the different methods and refining the network. Running the model without any new annotations yields an accuracy of $0.15$ on Stuttgart and  $0.33$ on Zurich.}
         \begin{tabular}{@{}ccccccc@{}} 
             \toprule
             \makecell{Dataset} & \makecell{Random} & \makecell{Entropy} & \makecell{Uncert. \\ Log} & \makecell{Loss \\ Log} & \makecell{Grad. \\ Norm} & \makecell{Grad. \\ Proj.} \\ 
@@ -655,18 +655,15 @@ When inspecting the gradients of the samples selected, we found that the stronge
         \end{tabular}
  %       \label{tab:object_wise_10_stuttgart}
         \label{tab:performance_10_stuttgart}
-          \vspace{-2em}
     \end{table}
    
     
     
  \begin{figure}
-   %  \vspace{-2em} 
     \centering
     \includegraphics[width=0.8\linewidth]{pics/tsne_all-crop.pdf}
    		\caption{t-SNE of the images gradients on the Stuttgart dataset. Each point represents the 2-D embedding of the gradient vector. The first 10 samples selected by each method are shown in different colors.}
 		\label{fig:tsne}    		
-     \vspace{-2em}
    \end{figure}
    
   
@@ -691,19 +688,20 @@ A more detailed breakdown of the methods performance is shown in Table~\ref{tab:
 \label{sec:conclusion}
 
 In this paper, we proposed an active learning approach that supports the adaptation
-of semantic segmentation networks to  new environments. Our approach  effectively 
+of semantic segmentation networks to new environments. Our approach  effectively 
 selects samples from the new environment for user annotation with the goal of 
 minimizing the annotation effort of the user during retraining.
 We applied  sample selection strategies to the task crop/weed classification for agricultural robots,
 as the appearance between agricultural fields often change substantially such that
 re-training is needed. 
-In our approach, we compute pseudo ground truth labels using very weakly supervised 
+We compute pseudo ground truth labels using very weakly supervised 
 segmentation and use those labels to estimate how new, unlabeled samples will 
 affect the weights of the CNN if selected for training. We select the training
 samples for user annotation based on the estimated effect on the weights and use them to refine the 
-network. Our other ranking methods combine the loss and the uncertainty measures provided by the network with 
-log-scale sorting to select samples for annotation.
-We evaluated  the performance gain of our gradient-and log based 
+network. 
+%Our other ranking methods combine the loss and the uncertainty measures provided by the network with 
+%log-scale sorting to select samples for annotation.
+We evaluated  the performance gain of our gradient-based  and log-based 
 approaches on two agricultural  datasets for weed detection. The datasets 
 reveal different characteristics from the dataset on which the network was pretrained.
 Our results show the effectiveness of our method as it produces higher semantic segmentation
