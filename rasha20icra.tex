@@ -196,14 +196,14 @@ infer the labels on another.
       denotes weed). As can be seen, the appearance differs
       substantially.}
     \label{fig:datasets_images}
-      \vspace{-2em}
+%      \vspace{-2em}
 \end{figure}
 
-The contribution of this work is to introduce and compare four active learning strategies that
+The contribution of this work is to introduce and compare three active learning strategies that
 intelligently pick images taken under new conditions to re-train an existing network:
-The first one picks samples based 
-on the uncertainty of their predictions, the second one based on their loss with respect 
-to pseudo labels. In both cases, we add diversity to the sample selection using a log-space ranking. The third and fourth approach select training samples that are expected to have a maximum effect on the network weights. Even though similar ideas have been explored for active learning in other application contexts, it is non trivial to apply them for semantic segmentation. An important technical novelty in our work is to exploit a pseudo ground truth, which we obtain with very weakly supervised segmentation. Our approach
+%The first one picks samples based on the uncertainty of their predictions, the second one based on their loss with respect to pseudo labels. In both cases, we add diversity to the sample selection using a log-space ranking. 
+The first one picks samples based on a log-space ranking of their loss  with respect 
+to pseudo labels. The second and third approaches select training samples that are expected to have a maximum effect on the network weights. Even though similar ideas have been explored for active learning in other application contexts, it is non trivial to apply them for semantic segmentation. An important technical novelty in our work is to exploit a pseudo ground truth, which we obtain with very weakly supervised segmentation. Our approach
 selects samples in batches, each time refining the network, then computing a
 new  ranking of the unlabeled data. The best samples are then selected and the
 network is re-trained. To compute the real gradients, corresponding ground
@@ -311,7 +311,7 @@ Du \etal~\cite{du2018adapting} use gradient similarity to determine when an auxi
         obtained from the network, we rank the unlabeled samples and pick them
         accordingly for annotation. Those samples are then used to refine the entire network.}
     \label{fig:overview}     
-      \vspace{-0.5em}   
+  %    \vspace{-0.5em}   
    \end{figure}
 
 
@@ -334,7 +334,9 @@ we train our model on the Bonn sugar beet dataset~\cite{chebrolu2017agricultural
 %We design these novel gradient-based approaches to select samples, one that is based on the norm of the network gradients, and the other on the norm of projected out gradients. We also combine measures already provided by the network, namely uncertainty and loss, with log-scale ranking. 
 
 
-We compare four different approaches to sample selection for active learning. The first one combines uncertainty with a log-based mechanism for achieving diversity (\secref{ssec:unc}). Our main technical contribution is generation of a pseudo ground truth (\secref{ssec:pseudo-ground-truth}) and its use for loss-based (\secref{ssec:loss}), as well as two gradient-based approaches for sample selection (\secref{ssec:normgrad} and \secref{ssec:gradproj}).
+We compare three different approaches to sample selection for active learning. 
+%The first one combines uncertainty with a log-based mechanism for achieving diversity (\secref{ssec:unc}). 
+Our main technical contribution is generation of a pseudo ground truth (\secref{ssec:pseudo-ground-truth}) and its use for loss-based (\secref{ssec:loss}), as well as two gradient-based approaches for sample selection (\secref{ssec:normgrad} and \secref{ssec:gradproj}).
 
 
 
@@ -357,7 +359,7 @@ We compare four different approaches to sample selection for active learning. Th
       provided by k-means clustering. Note that only such a rough
       segmentation as pseudo ground truth is enough for our approach.}
     \label{fig:unsupervised_foreground}
-      \vspace{-2em}
+  %    \vspace{-2em}
 \end{figure}
 
 
@@ -386,17 +388,17 @@ We evaluate our different approaches by first training a network on the Bonn sug
 %For the methods presented in sections \ref{sec:loss}, \ref{sec:grad_norm}, and \ref{sec:grad_proj}, we first obtain foreground masks with very weak supervision. 
 
 
-
-\subsection{Sample Selection Using Uncertainty}
-\label{ssec:unc}
-To infer the pixel-wise semantic segmentation of a new image, the network computes softmax probabilities in its last layer. The probabilities can serve as a guide as to which samples the network is most uncertain of. For every image passed through the network, we compute the following measure of the prediction confidence:
-\begin{align}
-u(\bold{x}) &= \frac{1}{N} \sum_{i=1}^N \max_c p(c  \mid  x_i),
-\end{align}  
-\noindent
-where $x_i$ is pixel $i$ in image $\bold{x}$, $c$ is the predicted class and $N$ is the number of pixels in the image.
-
-We then sort the images based on the computed uncertainty measure in a descending order and pick the images accordingly to refine the network on a new dataset. We found that it is helpful for the network to have diverse samples, especially because our goal is to train using only few annotated images. In contrast to standard approaches using the uncertainty for sampling, we rank the samples on a log-space scale as follows: We generate a string of numbers, starting from zero, that are spaced evenly on a log scale. These numbers are then used as the indices of the samples to be selected. Since the samples are sorted, this approach would more heavily select those that have higher uncertainty values while not completely discarding images that the network is more confident of.
+%
+%\subsection{Sample Selection Using Uncertainty}
+%\label{ssec:unc}
+%To infer the pixel-wise semantic segmentation of a new image, the network computes softmax probabilities in its last layer. The probabilities can serve as a guide as to which samples the network is most uncertain of. For every image passed through the network, we compute the following measure of the prediction confidence:
+%\begin{align}
+%u(\bold{x}) &= \frac{1}{N} \sum_{i=1}^N \max_c p(c  \mid  x_i),
+%\end{align}  
+%\noindent
+%where $x_i$ is pixel $i$ in image $\bold{x}$, $c$ is the predicted class and $N$ is the number of pixels in the image.
+%
+%We then sort the images based on the computed uncertainty measure in a descending order and pick the images accordingly to refine the network on a new dataset. We found that it is helpful for the network to have diverse samples, especially because our goal is to train using only few annotated images. In contrast to standard approaches using the uncertainty for sampling, we rank the samples on a log-space scale as follows: We generate a string of numbers, starting from zero, that are spaced evenly on a log scale. These numbers are then used as the indices of the samples to be selected. Since the samples are sorted, this approach would more heavily select those that have higher uncertainty values while not completely discarding images that the network is more confident of.
 
 \subsection{Generation and Use of Pseudo Ground Truth}
 \label{ssec:pseudo-ground-truth}
@@ -410,15 +412,11 @@ In order to compute a loss from the network output, which includes three classes
 \label{ssec:loss}
 
 The loss of the network is an indication of the segmentation error. Given that training neural networks with backpropagation is driven by the loss, it also provides a useful cue as to which samples the network will most benefit from. We compute the focal loss \cite{DBLP:conf/iccv/LinGGHD17} based on the pseudo ground truth.
+%
+%Again, different to typical approaches of active learning, which exploit the loss for sample selection, we sort
+%the images   based on this loss in a descending order and selected on a log-scale ranking to encourage diversity
 
-Again, different to typical approaches of active learning, which exploit the loss for sample selection, we sort
-the images   based on this loss in a descending order and selected on a log-scale ranking to encourage diversity as explained in the previous subsection.
-
-% consisting of a foreground-background segmentation that we achieve using k-means clustering on the RGB channels.
-
-%Initially, we use k-means to determine 20 cluster representatives from 10 randomly selected images. After viewing a single image that contains all 20 clusters, a human annotator chooses which clusters represent vegetation. In our experiments, it was enough to select two clusters. Therefore, the human annotation effort is merely a few seconds for one dataset. In accordance with previously used terminology \cite{zhang2018self}, we refer to this step as being very weakly supervised, since it only involves inspecting a single image. 
-
-%Pseudo ground truth is generated for all unlabeled images by assigning pixels to the selected clusters, and the loss is computed with respect to it. 
+We found that it is helpful for the network to have diverse samples, especially because our goal is to train using only few annotated images. In contrast to typical approaches, which exploit the loss for sample selection, we sort the images based on this loss in a descending order and rank them on a log-space scale as follows: We generate a string of numbers, starting from zero, that are spaced evenly on a log scale. These numbers are then used as the indices of the samples to be selected. Since the samples are sorted, this approach would more heavily select those that have higher loss values values while not completely discarding images that the network is performing well on.
 
 %The images are sorted based on this loss in a descending order. Rather than selecting those with the highest loss, we found that the network learns better when presented with diverse samples. The samples are therefore selected on a log-scale space.
 %
@@ -478,7 +476,7 @@ The datasets we used were acquired with a Bosch Deepfield Robotics UGV in three 
             \bottomrule
         \end{tabular}
         \label{tab:datasets_stats}
-           \vspace{-2em}
+  %         \vspace{-2em}
     \end{table}
      
 
@@ -542,17 +540,17 @@ Table~\ref{tab:object_wise} shows how our approach performs on the Stuttgart and
            \vspace{1em}
         \centering
         \caption{Object-wise Performance on both datasets. Each row shows the performance after selecting 10 samples with the different methods and refining the network. Running the model without any new annotations yields an accuracy of $0.15$ on Stuttgart and  $0.33$ on Zurich.}
-        \begin{tabular}{@{}ccccccc@{}} 
+        \begin{tabular}{@{}cccccc@{}} 
             \toprule
-            \makecell{Dataset} & \makecell{Random} & \makecell{Entropy} & \makecell{Uncert. \\ Log} & \makecell{Loss \\ Log} & \makecell{Grad. \\ Norm} & \makecell{Grad. \\ Proj.} \\ 
+            \makecell{Dataset} & \makecell{Random} & \makecell{Entropy} & \makecell{Loss \\ Log} & \makecell{Grad. \\ Norm} & \makecell{Grad. \\ Proj.} \\ 
             \midrule 
-          Stuttgart  & 0.6920 & 0.6890 & 0.6437 & 0.7882 & 0.8040 & 0.8196 \\ \addlinespace
+          Stuttgart  & 0.6920 & 0.6890 & 0.7882 & 0.8040 & 0.8196 \\ \addlinespace
 
-          Zurich  & 0.7552 & 0.7879 & 0.6943 & 0.7697 & 0.8354 & 0.8025 \\ 
+          Zurich  & 0.7552 & 0.7879 & 0.7697 & 0.8354 & 0.8025 \\ 
             \bottomrule
         \end{tabular}
         \label{tab:object_wise}
-          \vspace{-2em}
+  %        \vspace{-2em}
     \end{table}
    
 
@@ -567,7 +565,10 @@ e(\bold{x}) &= -\frac{1}{N} \sum_{i=1}^N \sum_{c} p(c \mid x_i) \log p(c \mid x_
 \noindent
 where $x_i$ is pixel $i$ in image $\bold{x}$, $c$ is the class and $N$ is the number of pixels in the image.
 
-This measure is frequently used in the literature~\cite{chakraborty2015active, zhou2017fine} for active learning. Although it finds samples that the network is uncertain of, it needs to be combined with a measure that provides some diversity in the sample selection. Figures \ref{fig:iou_stuttgart} and \ref{fig:iou_zurich} show the entropy performance when selecting higher number of samples. We note that combining our log-based selection with a similar uncertainty measure to provide diversity yields a better performance as can be seen in the figures.
+This measure is frequently used in the literature~\cite{chakraborty2015active, zhou2017fine} for active learning. 
+%Although it finds samples that the network is uncertain of, it needs to be combined with a measure that provides some diversity in the sample selection. 
+Figures \ref{fig:iou_stuttgart} and \ref{fig:iou_zurich} show the entropy performance when selecting higher number of samples. 
+%We note that combining our log-based selection with a similar uncertainty measure to provide diversity yields a better performance as can be seen in the figures.
 
 %In the second row, we run k-means on the gradients to find clusters that might be representative of the training samples. We found that a number of those clusters had very few samples so a more suitable clustering technique might be needed. 
 
@@ -617,18 +618,19 @@ When inspecting the gradients of the samples selected, we found that the stronge
        \begin{table}
         \vspace{1em}
         \centering
-      \caption{Precision and recall on the Stuttgart dataset after selecting the first 10 samples. The first table shows the pixel-wise performance and the second table shows the object-wise performance. The highest values along a column are in bold and the lowest in italics. The uncertainty-based method shows a large imbalance in performance on the two classes.}
+      \caption{Precision and recall on the Stuttgart dataset after selecting the first 10 samples. The first table shows the pixel-wise performance and the second table shows the object-wise performance. The highest values along a column are in bold and the lowest in italics.}
+  %    The uncertainty-based method shows a large imbalance in performance on the two classes.}
         \begin{tabular}{@{}lcccc@{}} 
             \toprule
             & \multicolumn{2}{c}{Precision} & \multicolumn{2}{c}{Recall}\\ 
            \cmidrule{2-5} 
                & Weed & Crop & Weed & Crop \\ 
             \midrule 
-    		  Random & \textit{0.4095} & 0.7278 & 0.4851 & 0.6946  \\ \addlinespace
-    		  Entropy & 0.4158 & 0.7334 & 0.4786 & \textit{0.5894}  \\ \addlinespace
-    		  Uncertainty Log & 0.5580 & \textit{0.6646} & \textit{0.2711} & \textbf{0.8880}  \\ \addlinespace
+    		  Random & \textit{0.4095} & \textit{0.7278} & 0.4851 & 0.6946  \\ \addlinespace
+    		  Entropy & 0.4158 & 0.7334 & \textit{0.4786} & \textit{0.5894}  \\ \addlinespace
+   % 		  Uncertainty Log & 0.5580 & \textit{0.6646} & \textit{0.2711} & \textbf{0.8880}  \\ \addlinespace
     		  Loss Log & 0.5331 & 0.8025 & 0.6179 & 0.8112  \\ \addlinespace
-    		  Gradient Norm & \textbf{0.5970} & 0.8259 & 0.6136 & 0.8402  \\ \addlinespace
+    		  Gradient Norm & \textbf{0.5970} & 0.8259 & 0.6136 & \textbf{0.8402}  \\ \addlinespace
     		  Gradient Projection & 0.5745 & \textbf{0.8365} & \textbf{0.6564} & 0.8212  \\ 
             \bottomrule
         \end{tabular}
@@ -641,10 +643,10 @@ When inspecting the gradients of the samples selected, we found that the stronge
 %               & Weed & Crop & Weed & Crop \\ 
 %            \midrule 
     		  Random & \textit{0.8723} & 0.5740 & 0.6587 & \textit{0.6474}  \\ \addlinespace
-    		  Entropy & 0.8851 & 0.5238 & 0.6122 & 0.7399  \\ \addlinespace
-    		  Uncertainty Log & \textbf{0.9476} & \textit{0.4586} & \textit{0.4919} & \textbf{0.8854}  \\ \addlinespace
+    		  Entropy & 0.8851 & \textit{0.5238} & \textit{0.6122} & 0.7399  \\ \addlinespace
+%    		  Uncertainty Log & \textbf{0.9476} & \textit{0.4586} & \textit{0.4919} & \textbf{0.8854}  \\ \addlinespace
     		  Loss Log & 0.9005 & 0.6898 & 0.7811 & 0.7351  \\ \addlinespace
-    		  Gradient Norm & 0.9090 & \textbf{0.7390} & 0.7970 & 0.7536  \\ \addlinespace
+    		  Gradient Norm & \textbf{0.9090} & \textbf{0.7390} & 0.7970 & \textbf{0.7536}  \\ \addlinespace
     		  Gradient Projection & 0.9030 & 0.7308 & \textbf{0.8289} & 0.7375  \\ 
             \bottomrule
         \end{tabular}
@@ -664,7 +666,7 @@ When inspecting the gradients of the samples selected, we found that the stronge
   
 \subsection{Performance on Weed and Crop Classes}
     
-A more detailed breakdown of the methods performance is shown in Table~\ref{tab:performance_10_stuttgart}. The first table shows the pixel-wise precision and recall on the Stuttgart dataset after selecting the first 10 samples. Both methods, Gradient Norm and Gradient Projection have a high recall and precision of the crop class without degrading those of the weed class. The object-wise performance in the second table further illustrates the effectiveness of these methods. Gradient Norm and Gradient Projection produce high precision and recall for both classes. The uncertainty-based method, on the other hand, shows a large imbalance of performance on the two classes.
+A more detailed breakdown of the methods performance is shown in Table~\ref{tab:performance_10_stuttgart}. The first table shows the pixel-wise precision and recall on the Stuttgart dataset after selecting the first 10 samples. Both methods, Gradient Norm and Gradient Projection have a high recall and precision of the crop class without degrading those of the weed class. The object-wise performance in the second table further illustrates the effectiveness of these methods. Gradient Norm and Gradient Projection produce high precision and recall for both classes. %The uncertainty-based method, on the other hand, shows a large imbalance of performance on the two classes.
    
 
 
