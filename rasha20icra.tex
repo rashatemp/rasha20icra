@@ -301,10 +301,11 @@ Du \etal~\cite{du2018adapting} use gradient similarity to determine when an auxi
 %Previous work, such as the Expected Gradient Length (EGL)~\cite{huang2016active, settles2008multiple}, has explored how changes in model parameters can be exploited for sample selection. However, differently it computes the expectation of the gradient norm over all possible annotations, which would be prohibitively expensive for pixel-wise semantic segmentation of images. We instead compute gradients from rough foreground/background segmentation.
 
 
-    \begin{figure}
+    \begin{figure*}
     \vspace{1em}
     \centering
-    \includegraphics[width=\linewidth]{pics/output_system_overview-crop.pdf}
+ %   \includegraphics[width=0.7\linewidth]{pics/output_system_overview-crop.pdf}
+    \includegraphics[width=0.7\linewidth]{pics/output_system_overview_small_font.pdf}
       \caption{Overview of our approach. The key idea is that we first
         perform a very weakly supervised segmentation to obtain pseudo
         ground truth. Given the labels and different ranking measures
@@ -312,7 +313,7 @@ Du \etal~\cite{du2018adapting} use gradient similarity to determine when an auxi
         accordingly for annotation. Those samples are then used to refine the entire network.}
     \label{fig:overview}     
   %    \vspace{-0.5em}   
-   \end{figure}
+   \end{figure*}
 
 
 \section{Our Approach to Effective Sample Selection}
@@ -506,10 +507,11 @@ The experiments in this section are designed to show how the proposed sample sel
 
 
     \begin{figure}
-     \vspace{1em}
+  %   \vspace{1em}
     \centering
  %   \includegraphics[width=0.8\linewidth]{pics/pw_iou_stuttgart-crop.pdf}
-    \includegraphics[width=0.8\linewidth]{pics/pw_iou_stuttgart_wentropy-crop.pdf}
+ %   \includegraphics[width=0.8\linewidth]{pics/pw_iou_stuttgart_wentropy-crop.pdf}
+    \includegraphics[width=0.9\linewidth]{pics/pw_iou_stuttgart_wentropy_nouncert.pdf}
    		\caption{Pixel-wise mean IoU on the Stuttgart dataset. Running the model without any new annotations yields an IoU of $0.34$. Running the model on the whole dataset yields an IoU of 0.79. Gradient-based approaches can reach $90\%$ of the fully supervised performance with 10 samples.}
 		\label{fig:iou_stuttgart}    		
 %    \vspace{1em}
@@ -519,7 +521,8 @@ The experiments in this section are designed to show how the proposed sample sel
     \centering
     \vspace{4mm}
  %    \includegraphics[width=0.8\linewidth]{pics/pw_iou_zurich-crop.pdf}
-     \includegraphics[width=0.8\linewidth]{pics/pw_iou_zurich_wentropy-crop.pdf}
+ %    \includegraphics[width=0.8\linewidth]{pics/pw_iou_zurich_wentropy-crop.pdf}
+     \includegraphics[width=0.9\linewidth]{pics/pw_iou_zurich_wentropy_nouncert.pdf}
    		\caption{Pixel-wise mean IoU on the Zurich dataset. Running the model without any new annotations yields an IoU of $0.36$. Running the model on the whole dataset yields an IoU of 0.70. Gradient-based approaches can reach $77\%$ of the fully supervised performance with 10 samples.}
 		\label{fig:iou_zurich}    		
 %    \vspace{-1.9em}
@@ -612,7 +615,7 @@ This implies that the gradient-based approaches are bounded by this performance.
 
 To further analyze the ranking methods and inspect potential patterns in the different sampling approaches, we plot the t-distributed Stochastic Neighbor Embedding (t-SNE) of the gradients in Figure~\ref{fig:tsne}. Each circle denotes the 2-D embedding of the gradient of a single image before picking the first 10 samples. Samples selected by each method are shown in different colors.
 As explained in Section \ref{sec:grad_norm} and \ref{sec:grad_proj}, we combined the idea of gradient-based selection with two alternative approaches to achieving diversity in the selected images: picking on a log scale, or projecting out gradients that have been selected previously. In our experiments, both strategies performed well (see \figref{fig:iou_stuttgart} and \figref{fig:iou_zurich}). 
-When inspecting the gradients of the samples selected, we found that the strongest gradients cluster together, near the bottom left. Additionally, the gradient projection method selects many points at the boundary of the distribution, suggesting that it might be improved further by adding a mechanism to ensure that selected images are representative of a larger subset in the overall dataset.
+When inspecting the gradients of the samples selected, we found that the strongest gradients cluster together, near the top left. Additionally, the gradient projection method selects many points at the boundary of the distribution, suggesting that it might be improved further by adding a mechanism to ensure that selected images are representative of a larger subset in the overall dataset.
 
 
        \begin{table}
@@ -638,10 +641,10 @@ When inspecting the gradients of the samples selected, we found that the stronge
            ~\\[1mm]
                 \begin{tabular}{@{}lcccc@{}} 
             \toprule
-%            & \multicolumn{2}{c}{Precision} & \multicolumn{2}{c}{Recall}\\ 
-%           \cmidrule{2-5} 
-%               & Weed & Crop & Weed & Crop \\ 
-%            \midrule 
+            & \multicolumn{2}{c}{Precision} & \multicolumn{2}{c}{Recall}\\ 
+           \cmidrule{2-5} 
+               & Weed & Crop & Weed & Crop \\ 
+            \midrule 
     		  Random & \textit{0.8723} & 0.5740 & 0.6587 & \textit{0.6474}  \\ \addlinespace
     		  Entropy & 0.8851 & \textit{0.5238} & \textit{0.6122} & 0.7399  \\ \addlinespace
 %    		  Uncertainty Log & \textbf{0.9476} & \textit{0.4586} & \textit{0.4919} & \textbf{0.8854}  \\ \addlinespace
@@ -658,7 +661,8 @@ When inspecting the gradients of the samples selected, we found that the stronge
     
  \begin{figure}
     \centering
-    \includegraphics[width=0.8\linewidth]{pics/tsne_all-crop.pdf}
+  %  \includegraphics[width=0.8\linewidth]{pics/tsne_all-crop.pdf}
+        \includegraphics[width=0.9\linewidth]{pics/tsne_all_nouncert.pdf}
    		\caption{t-SNE of the images gradients on the Stuttgart dataset. Each point represents the 2-D embedding of the gradient vector. The first 10 samples selected by each method are shown in different colors.}
 		\label{fig:tsne}    		
    \end{figure}
