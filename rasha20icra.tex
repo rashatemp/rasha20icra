@@ -417,7 +417,15 @@ The loss of the network is an indication of the segmentation error. Given that t
 %Again, different to typical approaches of active learning, which exploit the loss for sample selection, we sort
 %the images   based on this loss in a descending order and selected on a log-scale ranking to encourage diversity
 
-We found that it is helpful for the network to have diverse samples, especially because our goal is to train using only few annotated images. In contrast to typical approaches, which exploit the loss for sample selection, we sort the images based on this loss in a descending order and rank them on a log-space scale as follows: We generate a string of numbers, starting from zero, that are spaced evenly on a log scale. These numbers are then used as the indices of the samples to be selected. Since the samples are sorted, this approach would more heavily select those that have higher loss values values while not completely discarding images that the network is performing well on.
+We found that it is helpful for the network to have diverse samples, especially because our goal is to train using only few annotated images. In contrast to typical approaches, which exploit the loss for sample selection, we sort the images based on this loss in a descending order and rank them on a log-space scale as follows: We generate a string of numbers, starting from zero, that are spaced evenly on a log scale. These numbers are then used as the indices of the samples to be selected. This can be formulated as:
+\begin{align}
+i = \lfloor\lvert P \rvert ^ {n/(\lvert S \rvert -1)}\rfloor - 1, 
+\quad  \quad n\in \lbrace 0,1,\ldots,\rvert S\rvert-1\rbrace
+\end{align}
+
+where $i$ is the index of the $n$-th sample, $\lvert S \rvert$ is the number of samples to be selected and $\lvert P \rvert$ is the size of the images pool.
+
+Since the samples are sorted, this approach would more heavily select those that have higher loss values while not completely discarding images that the network is performing well on.
 
 %The images are sorted based on this loss in a descending order. Rather than selecting those with the highest loss, we found that the network learns better when presented with diverse samples. The samples are therefore selected on a log-scale space.
 %
@@ -528,15 +536,16 @@ The experiments in this section are designed to show how the proposed sample sel
 %    \vspace{-1.9em}
    \end{figure}
    
+
+The overall performance on the Stuttgart dataset is better than that on the Zurich dataset. This can be attributed to the different class statistics of the two datasets. As can be seen in Table \ref{tab:datasets_stats}, the Stuttgart dataset has a larger percentage of crop and weed pixels compared to the Zurich dataset. This allows the model to better distinguish between the different classes. This observation is also supported by the fully supervised performance shown in Table \ref{tab:null_and_fully_supervised} where a higher IoU can be obtained on the Stuttgart dataset. 
     
 Figures \ref{fig:iou_stuttgart} and \ref{fig:iou_zurich} show the performance on the Stuttgart and Zurich datasets when selecting samples for annotation with different methods.  
 A few observations can be made: the effect of the sampling method is stronger when only a few images are selected. As the model is trained on more and more samples, the accuracy plateaus as expected and the variation between the different methods decreases. It can be noted however that random sampling has a lower performance even with a greater number of images.
 
-When training the model with only a handful of images, the methods that take into account the impact of the samples on the weights lead to better generalization to the rest of the unseen data. In particular, ranking samples by projecting out gradients results in higher mIoU on both datasets. With 10 samples, which would amount to roughly $1\%$ of the training dataset size, we can achieve $90\%$ of the fully supervised performance (Table~\ref{tab:null_and_fully_supervised}) on the Stuttgart dataset, compared to $76\%$ with random selection. On the Zurich dataset, we can achieve $77\%$ of the fully supervised performance compared to $63\%$ with random selection.
-
+When training the model with only a handful of images, 10 or 20 images, the methods that take into account the impact of the samples on the weights lead to better generalization to the rest of the unseen data. In particular, ranking samples by projecting out gradients results in higher mIoU on both datasets. With 10 samples, which would amount to roughly $1\%$ of the training dataset size, we can achieve $90\%$ of the fully supervised performance (Table~\ref{tab:null_and_fully_supervised}) on the Stuttgart dataset, compared to $76\%$ with random selection. On the Zurich dataset, we can achieve $77\%$ of the fully supervised performance compared to $63\%$ with random selection.
 
 To further quantify the performance of our approach, we use the object-wise metric defined by Milioto \etal~\cite{milioto2018real}, where the accuracy is measured for objects larger than 50 pixels. Since the target application is weeding with agricultural robotics, this metric is more directly useful than pixel-wise performance.  
-Tables~\ref{tab:object_wise_stuttgart} and \ref{tab:object_wise_zurich} show how our approach performs on the Stuttgart and Zurich datasets. Each row shows the mean accuracy when selecting $n$ samples with different methods. For comparison, random and entropy based sampling are shown in the first and second columns respectively.
+Table~\ref{tab:object_wise_stuttgart_zurich} shows how our approach performs on the Stuttgart and Zurich datasets. Each row shows the mean accuracy when selecting $n$ samples with different methods. For comparison, random and entropy based sampling are shown in the first and second columns respectively.
 
 %   \begin{table}
 %           \vspace{1em}
@@ -561,7 +570,7 @@ Tables~\ref{tab:object_wise_stuttgart} and \ref{tab:object_wise_zurich} show how
        \begin{table}
            \vspace{1em}
         \centering
-        \caption{Object-wise Performance on the Stuttgart dataset. Each row shows the performance after selecting 10 samples with the different methods and refining the network. Running the model without any new annotations yields an accuracy of $0.15$.}
+        \caption{Object-wise Performance on the Stuttgart and Zurich datasets respectively. Each row shows the performance after selecting 10 samples with the different methods and refining the network. Running the model without any new annotations yields an accuracy of $0.15$ on Stuttgart and $0.33$ on Zurich.}
         \begin{tabular}{@{}cccccc@{}} 
             \toprule
             \makecell{Samples \\ No.} & \makecell{Random} & \makecell{Entropy} & \makecell{Loss} & \makecell{Gradient \\ Norm} & \makecell{Gradient \\ Proj.} \\ 
@@ -573,14 +582,10 @@ Tables~\ref{tab:object_wise_stuttgart} and \ref{tab:object_wise_zurich} show how
     		  50  & 0.8225 & 0.8405 & 0.8523 & \textbf{0.8599} & 0.8278 \\  
             \bottomrule
         \end{tabular}
-        \label{tab:object_wise_stuttgart}
-    \end{table}
-   
-       
-    
-        \begin{table}
-        \centering
-        \caption{Object-wise Performance on the Zurich dataset. Each row shows the performance after selecting 10 samples with the different methods and refining the network. Running the model without any new annotations yields an accuracy of $0.33$.}
+        
+ 		 \vspace{2em}        
+        
+        
         \begin{tabular}{@{}cccccc@{}} 
             \toprule
             \makecell{Samples \\ No.} & \makecell{Random} & \makecell{Entropy} & \makecell{Loss} & \makecell{Gradient \\ Norm} & \makecell{Gradient \\ Proj.} \\ 
@@ -592,9 +597,29 @@ Tables~\ref{tab:object_wise_stuttgart} and \ref{tab:object_wise_zurich} show how
     		  50  & 0.8593 & 0.8688 & 0.8636 & \textbf{0.8852} & 0.8784 \\
             \bottomrule
         \end{tabular}
-        \label{tab:object_wise_zurich}
-   %               \vspace{-1em}
+        
+        \label{tab:object_wise_stuttgart_zurich}
     \end{table}
+   
+       
+    
+%        \begin{table}
+%        \centering
+%        \caption{Object-wise Performance on the Zurich dataset. Each row shows the performance after selecting 10 samples with the different methods and refining the network. Running the model without any new annotations yields an accuracy of $0.33$.}
+%        \begin{tabular}{@{}cccccc@{}} 
+%            \toprule
+%            \makecell{Samples \\ No.} & \makecell{Random} & \makecell{Entropy} & \makecell{Loss} & \makecell{Gradient \\ Norm} & \makecell{Gradient \\ Proj.} \\ 
+%            \midrule 
+%    		  10  & 0.7552 & 0.7879 & 0.7697 & \textbf{0.8354} & 0.8025 \\ \addlinespace
+%    		  20  & 0.7971 & 0.8212 & 0.8189 & \textbf{0.8768} & 0.8170 \\ \addlinespace
+%    		  30  & \textbf{0.8591} & 0.7884 & 0.8321 & 0.8553 & 0.8299 \\ \addlinespace
+%    		  40  & 0.8575 & \textbf{0.8711} & 0.8610 & \textbf{0.8711} & 0.8479 \\ \addlinespace
+%    		  50  & 0.8593 & 0.8688 & 0.8636 & \textbf{0.8852} & 0.8784 \\
+%            \bottomrule
+%        \end{tabular}
+%        \label{tab:object_wise_zurich}
+%   %               \vspace{-1em}
+%    \end{table}
   
 
 
@@ -616,9 +641,9 @@ Figures \ref{fig:iou_stuttgart} and \ref{fig:iou_zurich} show the entropy perfor
 
 %In the second row, we run k-means on the gradients to find clusters that might be representative of the training samples. We found that a number of those clusters had very few samples so a more suitable clustering technique might be needed. 
 
-In the second row, we ran an experiment where we trained the model with the pseudo ground truth first and picked samples randomly afterwards. We found that it performs worse than when picking random samples directly. Although pre-training with the pseudo ground truth allows the network to distinguish foreground vegetation from background, the task at hand is to learn three classes and more importantly distinguish crop from weed. Therefore for all experiments, we refine the model without pre-training on the foreground masks.
+In the second row, we ran an experiment where we trained the model with the pseudo ground truth first and picked samples randomly afterwards. For the first $10$ samples we obtain a higher IoU value ($0.64$) than when picking random samples directly ($0.61$). However for any number of samples larger than $10$, the performance becomes worse. Although pre-training with the pseudo ground truth allows the network to distinguish foreground vegetation from background, the task at hand is to learn three classes and more importantly distinguish crop from weed. Therefore for all experiments, we refine the model without pre-training on the foreground masks.
 
-In the last row, we run an "oracle" experiment. We find the difference between the parameters of the model without any refinement and the parameters of the fully supervised model. We then find samples with gradients that align with the parameters difference. This experiment is not intended for sample selection, rather to know if the framework had complete knowledge of how the gradients should look like, would it be able to pick better samples. We found that the oracle performance is similar to our gradient-based approaches after seeing 10 new samples.  %\todo{This means that.. Complete stentence}. 
+In the last row, we run an "oracle" experiment. We compute the difference between the parameters of the model without any refinement and the parameters of the fully supervised model. We then find samples with gradients that align with the parameters difference. This experiment is not intended for sample selection, rather to know if the framework had complete knowledge of how the gradients should look like, would it be able to pick better samples. We found that the oracle performance is similar to our gradient-based approaches after seeing 10 new samples.  %\todo{This means that.. Complete stentence}. 
 This implies that the gradient-based approaches are bounded by this performance. Substantially improving upon their performance might require exploiting additional knowledge from the model, possibly with the aid of unsupervised segmentation. 
 
 
@@ -711,7 +736,7 @@ When inspecting the gradients of the samples selected, we found that the stronge
   
 \subsection{Performance on Weed and Crop Classes}
     
-A more detailed breakdown of the methods performance is shown in Table~\ref{tab:performance_10_stuttgart}. The first table shows the pixel-wise precision and recall on the Stuttgart dataset after selecting the first 10 samples. Both methods, Gradient Norm and Gradient Projection have a high recall and precision of the crop class without degrading those of the weed class. The object-wise performance in the second table further illustrates the effectiveness of these methods. Gradient Norm and Gradient Projection produce high precision and recall for both classes. %The uncertainty-based method, on the other hand, shows a large imbalance of performance on the two classes.
+A more detailed breakdown of the methods performance is shown in Table~\ref{tab:performance_10_stuttgart}. The first table shows the pixel-wise precision and recall on the Stuttgart dataset after selecting the first 10 samples. Both methods, Gradient Norm and Gradient Projection have a high recall and precision of the crop class without degrading those of the weed class. The object-wise performance in the second table further illustrates the effectiveness of these methods. Gradient Norm and Gradient Projection produce high precision and recall for both classes. We observed the same behavior on the Zurich dataset (not included here).
    
 
 
@@ -735,11 +760,15 @@ select samples from the new environment for user annotation with the goal of max
 We applied  sample selection strategies to the task crop/weed classification for agricultural robots,
 as the appearance between agricultural fields often changes substantially such that
 re-training is needed. 
+
 We compute pseudo ground truth labels using very weakly supervised 
 segmentation and use those labels to estimate how new, unlabeled samples will 
 affect the weights of the CNN if selected for training. We select the training
 samples for user annotation based on the estimated effect on the weights and use them to refine the 
 network. 
+
+In our agricultural application, the number of true classes (3) is not much higher than the number of classes (2) in our pseudo-ground truth. Naturally, in a different semantic segmentation task, the number of classes could be higher and might require generating a pseudo-ground truth with a larger number of classes. Our method here uses a simple clustering mechanism but other unsupervised or weakly supervised methods can also be used to generate pseudo-labels with a higher number of classes that can be later used to compute the gradients for sample selection. 
+
 %Our other ranking methods combine the loss and the uncertainty measures provided by the network with 
 %log-scale sorting to select samples for annotation.
 We evaluated  the performance gain of our gradient-based  and log-based 
@@ -750,6 +779,13 @@ accuracies with a small number of training samples, compared to random sampling 
 well as entropy based sampling. As a result
 of that, the effort in human annotation is reduced without compromising
 performance.
+
+
+
+
+
+
+
  
      %    \vspace{1em}
 %%\bibliographystyle{IEEEtran}
