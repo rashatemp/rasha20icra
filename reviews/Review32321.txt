@@ -1,0 +1,43 @@
+Reviewer 12 of ICRA 2020 submission 1218
+
+Comments to the author
+======================
+
+The paper addresses active learning for semantic
+segmentation in image-based agriculture application ie,
+recognizing crop vs weed plants. Transfer learning is
+explored, and selective sampling as well. 
+
+Writing style is clear. I’ve appreciated the efforts made
+by the authors to clarify their approach, eg sentences like
+this are important: “We emphasize that the pseudo ground
+truth is only used to select training samples that should
+be annotated; the network weights are updated based on
+manual annotations of the selected samples, which include
+all three classes.”
+
+I have concerns about the strategy used to select diverse
+samples, which is based on the ranked order of increasing
+loss values. I am not confident diversity is directly
+related to loss value.
+
+Perhaps a pseudo-algorithm could facilitate the
+understanding of the three sample selection strategies.
+
+I suggest preventing expressions as “handful of images”, on
+the contrary, say the exact number of examples instead.
+
+Fig4: I can not see IoU=0.79 in none of the curves. For me
+the best performance is close to 0.77.
+
+Experimental part is good. But, overall this paper is more
+about image-based ML coping with an agri-robotics use case.
+So, in my opinion, more details regarding the robotic
+platforms, the sensors setup, the ways this perception
+system will be incorporated in a real-world robotic system
+or project would make the paper more robotic-related.
+
+Some minor corrections, mistakes
+loss values values
+Table IV caption could be shortened, given the Table III
+has quite similar caption.

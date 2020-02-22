@@ -1,0 +1,40 @@
+Reviewer 6 of ICRA 2020 submission 1218
+
+Comments to the author
+======================
+
+The paper is well written and well structured. The work is
+interesting, but I have some points to be
+clarified/discussed:
+
+1- Why the performance on the Zurich dataset is less than
+the performance on Stuttgart dataset (Figures 4 and 5).
+
+2- The main issue is related to the number of classes of
+the target problem. Indeed, the work presented in the paper
+is concerned with a problem with 3 classes. The pseudo
+ground truths that are used in the samples selection
+process are generated using weakly supervised segmentation
+(K-means). Each pseudo ground truth consists of a binary
+segmentation with two classes (foreground and background).
+Hence, the good performance could be explained by the fact
+that the target problem and the pseudo ground truths have
+almost the same number of classes: 3 for the target problem
+and 2 for the pseudo ground truths. The question is how
+would be the performance if the number of classes of the
+target problem is high (>>2), which is the case in the
+majority of semantic segmentation tasks. What is the point
+of view of the authors about this issue ? If this is true,
+how to handle this issue.
+
+3- In page 5, second column, first paragraph. The authors
+said "We found that it performs worse than when picking
+random samples directly". Please give the compared
+numeriacl results (performances) to assess this claiming.
+
+4- The experiments of Tables V and VI and Figure 6 are
+related to Stuttgart dataset. How about the Zurich dataset
+? Are the analysis and conclusions the same ?
+
+5- Minor comment: Page 3, column 2, end of the second
+paragraph of Section C, "values" is repeated.
