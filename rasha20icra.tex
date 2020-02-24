@@ -467,7 +467,9 @@ In this section, we demonstrate the effectiveness of the approaches we designed 
 
 \subsection{Datasets}
 
-The datasets we used were acquired with a Bosch Deepfield Robotics UGV in three different fields: Bonn and Stuttgart in Germany, and Zurich in Switzerland. The datasets have weed and crop plants at different stages of growth and Figure~\ref{fig:datasets_images} shows sample images from the different datasets. The images vary in their illumination, soil type, and class statistics, hence the need for transfer learning. The images have been annotated into three classes:  weed, crop, and soil/misc.  Table~\ref{tab:datasets_stats} shows the number of images in each dataset and the ratio of foreground pixels. It can be clearly seen that there is a high imbalance of classes in the data.
+The datasets we used were acquired with a Bosch Deepfield Robotics UGV. The robot was developed to assist in several agricultural applications, including mechanical weed control and selective herbicide spraying \cite{chebrolu2017agricultural}. It is equipped with multiple sensors such as cameras, GPS trackers, and 3D laser sensors. For our experiments we use the RGB data provided by the JAI AD-130GE camera. 
+
+The data was captured in three different fields: Bonn and Stuttgart in Germany, and Zurich in Switzerland. The datasets have weed and crop plants at different stages of growth. Figure~\ref{fig:datasets_images} shows sample images from the different datasets. The images vary in their illumination, soil type, and class statistics, hence the need for transfer learning. The images have been annotated into three classes:  weed, crop, and soil/misc.  Table~\ref{tab:datasets_stats} shows the number of images in each dataset and the ratio of foreground pixels. It can be clearly seen that there is a high imbalance of classes in the data.
 
 
 
