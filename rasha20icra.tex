@@ -239,27 +239,16 @@ A key component of each of these unmanned platforms is a core perception system 
 has the ability to accurately distinguish crops from weeds in order to effectively
 and selectively apply the desired individual treatment~\cite{lottes2018iros, mccool2017ral,milioto2017uavg,milioto2018real,sa2018rs}.
 These systems allow autonomous robots to perform actuation in the fields without human supervision, treating each plant individually.
-All of the works referenced, however, are based on supervised learning approaches which take large amounts of pixel-accurate hand-labeled images for training. 
+All of the works referenced, however, are based on supervised learning approaches which take large amounts of pixel-accurate hand-labeled images for training. Accordingly, one of the main bottlenecks of these visual processing pipelines is the amount of expensive labeled training data required to deploy them in real agricultural fields, which often limits their applicability. In order to tackle this data starvation problem, we propose an active learning based solution.
 
-Accordingly, one of the main bottlenecks of these visual processing pipelines is the amount of expensive labeled training data required to deploy them in real agricultural fields, which often limits their applicability. In order to tackle this data starvation problem, we propose an active learning based solution.
-
-Numerous works on general active learning have been presented in the community~\cite{settles2009active,guyon2011results,holub2008entropy, yoo2019learning}. The most common measures for selecting samples are based on the uncertainty of the network~\cite{zhou2017fine, yang2017suggestive, gal2017deep, wang2017cost} and diversity~\cite{zhou2017fine, dutt2016active, kading2016active}.  Sener \etal~\cite{sener2017geometric} assert based on the experiments they performed that uncertainty based approaches are not effective for active learning with CNNs. They hypothesize that this is not due to the inaccurate estimate of uncertainty by the network, rather to the ineffectiveness of uncertainty based approaches to cover the space of image features.
-
-The Expected Model Output Change Principle (EMOC) developed by Freytag \etal~\cite{freytag2014selecting} tries to avoid selecting samples that are redundant and K{\"a}ding \etal~\cite{kading2016active} follow this approach with deep neural networks. This principle measures how a model would perform with and without the candidate sample. Given that the labels are unknown, a marginalization over the possible labels is needed. %This marginalization however can be expensive when having a large number of classes, so the authors use maximum a-posteriori approximation instead and use the class with the highest probability prediction.
-
+Numerous works on general active learning have been presented in the community~\cite{settles2009active,guyon2011results,holub2008entropy, yoo2019learning}. The most common measures for selecting samples are based on the uncertainty of the network~\cite{zhou2017fine, yang2017suggestive, gal2017deep, wang2017cost} and diversity~\cite{zhou2017fine, dutt2016active, kading2016active}.  Sener \etal~\cite{sener2017geometric} assert based on the experiments they performed that uncertainty based approaches are not effective for active learning with CNNs. They hypothesize that this is not due to the inaccurate estimate of uncertainty by the network, rather to the ineffectiveness of uncertainty based approaches to cover the space of image features. The Expected Model Output Change Principle (EMOC) developed by Freytag \etal~\cite{freytag2014selecting} tries to avoid selecting samples that are redundant and K{\"a}ding \etal~\cite{kading2016active} follow this approach with deep neural networks. This principle measures how a model would perform with and without the candidate sample. Given that the labels are unknown, a marginalization over the possible labels is needed. %This marginalization however can be expensive when having a large number of classes, so the authors use maximum a-posteriori approximation instead and use the class with the highest probability prediction. 
 Uncertainty estimation for active learning can be performed using Monte-Carlo dropout as in~\cite{gal2017deep} or with an ensemble of deep networks. Beluch \etal~\cite{beluch2018power} compare both of these approaches on different datasets. They found that an ensemble of deep classifiers has a superior performance even with a smaller number of models. They conclude that Monte-Carlo dropout approaches suffer from a lower diversity and a smaller model capacity.
-
-The works mentioned previously and the current state-of-the-art methods for active learning including~\cite{gal2017deep,beluch2018power,sener2017active,yoo2019learning} are either more suitable for tasks other than pixel-wise semantic segmentation of images with CNNs and/or are memory and computationally expensive.
 
 Weakly supervised segmentation is an active research topic~\cite{wei2018revisiting, acuna2018efficient, tang2018normalized, kwak2017weakly}. In the context of self-learning, Zhang \etal~\cite{zhang2018self} use labels obtained with K-means graph cuts as ground truth for their network. The predictions produced by the model are then used as the target labels for the next iteration of the process.  
 
-Different to the previously mentioned works, we experiment with approaches that directly measure how annotated samples can affect the gradients. We use labels obtained with very weak supervision as pseudo ground truth and compute the gradients w.r.t the weights. We then refine a pre-trained network with the newly annotated samples in an iterative manner. 
+The works mentioned previously and the current state-of-the-art methods for active learning including~\cite{gal2017deep,beluch2018power,sener2017active,yoo2019learning} are either more suitable for tasks other than pixel-wise semantic segmentation of images with CNNs and/or are memory and computationally expensive. Differently, we experiment with approaches that directly measure how annotated samples can affect the gradients. We use labels obtained with very weak supervision as pseudo ground truth and compute the gradients w.r.t the weights. We then refine a pre-trained network with the newly annotated samples in an iterative manner. Our intuition for using gradients is driven by the observation that the greater the mismatch is between the predicted segmentation and the ground truth, the larger the change is to the weights. This is in contrast to most of the approaches mentioned earlier that rely on the confidence of the network which may not be the best indication of the best samples to choose for annotation, as the network output might actually be correct although the network is uncertain about it.
 
-Our intuition for using gradients is driven by the observation that the greater the mismatch is between the predicted segmentation and the ground truth, the larger the change is to the weights. This is in contrast to most of the approaches mentioned earlier that rely on the confidence of the network which may not be the best indication of the best samples to choose for annotation, as the network output might actually be correct although the network is uncertain about it.
-
-Previous work, such as the Expected Gradient Length (EGL)~\cite{huang2016active, settles2008multiple}, has explored how changes in model parameters can be exploited for sample selection. However, it computes the expectation of the gradient norm over all possible annotations, which would be prohibitively expensive for pixel-wise semantic segmentation of images. We instead compute gradients from rough foreground/background segmentation.
-
-Du \etal~\cite{du2018adapting} use gradient similarity to determine when an auxiliary task is helpful for transfer learning to the main task and when it can be hurtful. Although in our work, the weakly supervised setting can be seen as an auxiliary task, we only use the gradients computed there as a guidance to choose samples for annotations. These gradients are not used to measure similarity with those of the main task nor are the parameters of the main task updated with those gradients. 
+Previous work, such as the Expected Gradient Length (EGL)~\cite{huang2016active, settles2008multiple}, has explored how changes in model parameters can be exploited for sample selection. However, it computes the expectation of the gradient norm over all possible annotations, which would be prohibitively expensive for pixel-wise semantic segmentation of images. We instead compute gradients from rough foreground/background segmentation. Du \etal~\cite{du2018adapting} use gradient similarity to determine when an auxiliary task is helpful for transfer learning to the main task and when it can be hurtful. Although in our work, the weakly supervised setting can be seen as an auxiliary task, we only use the gradients computed there as a guidance to choose samples for annotations. These gradients are not used to measure similarity with those of the main task nor are the parameters of the main task updated with those gradients. 
 
 
 %Several works focusing on the elimination or reduction of herbicide use,
@@ -312,7 +301,7 @@ Du \etal~\cite{du2018adapting} use gradient similarity to determine when an auxi
         obtained from the network, we rank the unlabeled samples and pick them
         accordingly for annotation. Those samples are then used to refine the entire network.}
     \label{fig:overview}     
-  %    \vspace{-0.5em}   
+      \vspace{-1.5em}   
    \end{figure}
 
 
@@ -322,10 +311,8 @@ Du \etal~\cite{du2018adapting} use gradient similarity to determine when an auxi
 Figure~\ref{fig:overview} shows an overview of our framework.
 The key idea of our approach is to perform a very weakly supervised segmentation to obtain pseudo ground truth. Given the labels and different measures produced by the network, we rank the unlabeled samples and pick them accordingly for annotation. These are then used to refine the entire network.
 
-
 Our CNN for semantic segmentation relies on Bonnet~\cite{milioto2018bonnet}.
-The used network is based on SegNet~\cite{badrinarayanan2017segnet} and ENet~\cite{paszke2016enet}. It has an encoder-decoder structure with a total of 25 [5x5] convolutional layers. It uses batch normalization, residual connections, ReLU as the non-linearity layer, and the focal loss function~\cite{DBLP:conf/iccv/LinGGHD17}.
-As input to our network, we only use the standard RGB channels of a camera.
+The used network is based on SegNet~\cite{badrinarayanan2017segnet} and ENet~\cite{paszke2016enet}. It has an encoder-decoder structure with a total of 25 [5x5] convolutional layers. It uses batch normalization, residual connections, ReLU as the non-linearity layer, and the focal loss function~\cite{DBLP:conf/iccv/LinGGHD17}. As input to our network, we only use the standard RGB channels of a camera. 
 
 In order to perform the semantic segmentation in sugar beet field for agricultural robotics tasks,
 we train our model on the Bonn sugar beet dataset~\cite{chebrolu2017agricultural}. We then refine the trained model on other datasets by incrementally selecting batches of samples. The datasets differ in their crop/weed statistics and the images acquired with the cameras also differ in their illumination. Therefore, simply running the trained model to segment the vegetation in other fields does not work.
@@ -349,7 +336,7 @@ Our main technical contribution is generation of a pseudo ground truth (\secref{
 %% we thought we would add it again early on because one of the reviewers was confused by the meaning of pseudo ground truth
 
 \begin{figure}
-% \vspace{1em}
+ \vspace{1em}
     \centering
     \includegraphics[width=0.32\linewidth]{pics/unsupervised/img_masks_8mm_fromImages_frame256.png}
     \includegraphics[width=0.32\linewidth]{pics/unsupervised/gt_masks_8mm_fromImages_frame256_GroundTruth_iMap.png}
@@ -419,15 +406,13 @@ The loss of the network is an indication of the segmentation error. Given that t
 %Again, different to typical approaches of active learning, which exploit the loss for sample selection, we sort
 %the images   based on this loss in a descending order and selected on a log-scale ranking to encourage diversity
 
-We found that it is helpful for the network to have diverse samples, especially because our goal is to train using only few annotated images. In contrast to typical approaches, which exploit the loss for sample selection, we sort the images based on this loss in a descending order and rank them on a log-space scale as follows: We generate a string of numbers, starting from zero, that are spaced evenly on a log scale. These numbers are then used as the indices of the samples to be selected. This can be formulated as:
+We found that training only on the images with the highest loss values did not generalize well. This could indicate that they are not representative enough of the overall dataset. Therefore, we instead employ a scheme that samples images with a diverse range of loss values, but prefers those with higher losses. To this end, we sort the images by their loss in a descending order, and then select them uniformly on a logarithmic scale. Specifically, we compute index i of the n-th sample as:
 \begin{align}
 i = \lfloor\lvert P \rvert ^ {n/(\lvert S \rvert -1)}\rfloor - 1, 
 \quad  \quad n\in \lbrace 0,1,\ldots,\rvert S\rvert-1\rbrace
 \end{align}
 
-where $i$ is the index of the $n$-th sample, $\lvert S \rvert$ is the number of samples to be selected and $\lvert P \rvert$ is the size of the images pool.
-
-Since the samples are sorted, this approach would more heavily select those that have higher loss values while not completely discarding images that the network is performing well on.
+where $i$ is the index of the $n$-th sample, $\lvert S \rvert$ is the number of samples to be selected and $\lvert P \rvert$ is the size of the images pool. Since the samples are sorted, this approach would more heavily select those that have higher loss values while not completely discarding images that the network is performing well on.
 %The images are sorted based on this loss in a descending order. Rather than selecting those with the highest loss, we found that the network learns better when presented with diverse samples. The samples are therefore selected on a log-scale space.
 %
 %We generate a string of numbers, starting from zero, that are spaced evenly on a log scale. These numbers are then used as the indices of the samples to be selected. Since the samples are sorted, this approach would more heavily select those that have higher loss values while not completely discarding images that the network is performing well on.
@@ -441,9 +426,7 @@ As in the previous approach, we use labels from very weakly supervised segmentat
 \begin{align}
 n_g(\bold{x}) &=  \left\lVert \nabla_{w_f} \mathcal{L}(\bold{x}) \right\rVert,
 \end{align}  
-where $\bold{x}$ is the image and $w$ are the weights of the final two layers.
-
-The images are sorted based on this measure in a descending order and again we pick samples on a log-space scale afterwards as explained earlier.
+where $\bold{x}$ is the image and $w$ are the weights of the final two layers. The images are sorted based on this measure in a descending order and again we pick samples on a log-space scale afterwards as explained earlier.
 
 \subsection{Sample Selection Using Gradient Projection} \label{sec:grad_proj}
 \label{ssec:gradproj}
@@ -452,9 +435,7 @@ The log-space in the previous approaches was used to ensure there is enough dive
 \begin{align}
 n_p(\bold{x}) &=  \left\lVert \bold{g_x} - \sum_{i=1}^S \frac{\left\langle \bold{g_i}, \bold{g_x} \right\rangle}{\left\langle \bold{g_i}, \bold{g_i} \right\rangle} \bold{g_i} \right\rVert,
 \end{align}
-where $\bold{x}$ is the image, $\bold{g_i}$ is the gradient of the $i$th sample out of $S$ previously selected samples, and $\bold{g_x}$ is the gradient of the current sample.
-
-We select samples one by one, each time sorting them according to this measure and choosing the one with the highest norm of the residual. To pick the first sample, we choose that with the highest norm of the gradient.
+where $\bold{x}$ is the image, $\bold{g_i}$ is the gradient of the $i$th sample out of $S$ previously selected samples, and $\bold{g_x}$ is the gradient of the current sample. We select samples one by one, each time sorting them according to this measure and choosing the one with the highest norm of the residual. To pick the first sample, we choose that with the highest norm of the gradient.
 
 
 
@@ -468,10 +449,8 @@ In this section, we demonstrate the effectiveness of the approaches we designed 
 
 The datasets we used were acquired with a Bosch Deepfield Robotics UGV. The robot was developed to assist in several agricultural applications, including mechanical weed control and selective herbicide spraying \cite{chebrolu2017agricultural}. It is equipped with multiple sensors such as cameras, GPS trackers, and 3D laser sensors. For our experiments we use the RGB data provided by the JAI AD-130GE camera. 
 
-The data was captured in three different fields: Bonn and Stuttgart in Germany, and Zurich in Switzerland. The datasets have weed and crop plants at different stages of growth. Figure~\ref{fig:datasets_images} shows sample images from the different datasets. The images vary in their illumination, soil type, and class statistics, hence the need for transfer learning. The images have been annotated into three classes:  weed, crop, and soil/misc.  Table~\ref{tab:datasets_stats} shows the number of images in each dataset and the ratio of foreground pixels. It can be clearly seen that there is a high imbalance of classes in the data.
-
-
-
+The data was captured in three different fields: Bonn and Stuttgart in Germany, and Zurich in Switzerland. The datasets have weed and crop plants at different stages of growth. Figure~\ref{fig:datasets_images} shows sample images from the different datasets. The images vary in their illumination, soil type, and class statistics, hence the need for transfer learning. The images have been annotated into three classes:  weed, crop, and soil/misc.  Table~\ref{tab:datasets_stats} shows the number of images in each dataset and the ratio of foreground pixels. It can be clearly seen that there is a high imbalance of classes in the data. 
+We follow the approach of \cite{milioto2018real} and split the new dataset into three sets: 40\% for training, 10\% for validation, and 50\% for testing. The samples are picked from the training set. All experiments were conducted on four Nvidia Titan~X GPUs.  
     \begin{table}
        \vspace{1em}
         \centering
@@ -489,10 +468,6 @@ The data was captured in three different fields: Bonn and Stuttgart in Germany, 
   %         \vspace{-2em}
     \end{table}
      
-
-
-We follow the approach of \cite{milioto2018real} and split the new dataset into three sets: 40\% for training, 10\% for validation, and 50\% for testing. The samples are picked from the training set. All experiments were conducted on four Nvidia Titan~X GPUs.  
-
 
 \subsection{Re-Training Performance}
 
@@ -512,6 +487,7 @@ The experiments in this section are designed to show how the proposed sample sel
             \bottomrule
         \end{tabular}
         \label{tab:null_and_fully_supervised}
+            \vspace{-2em}
     \end{table}
 
 
@@ -538,8 +514,14 @@ The experiments in this section are designed to show how the proposed sample sel
    \end{figure}
    
 
-Figures \ref{fig:iou_stuttgart} and \ref{fig:iou_zurich} show the performance on the Stuttgart and Zurich datasets when selecting samples for annotation with different methods.  
-A few observations can be made: the effect of the sampling method is stronger when only a few images are selected. As the model is trained on more and more samples, the accuracy plateaus as expected and the variation between the different methods decreases. It can be noted however that random sampling has a lower performance even with a greater number of images.
+Figures \ref{fig:iou_stuttgart} and \ref{fig:iou_zurich} show the performance on the Stuttgart and Zurich datasets when selecting samples for annotation with different methods. We include as baselines random sampling, and selecting samples that have the highest entropy~(\cite{chakraborty2015active, zhou2017fine}):
+\begin{align}
+H(\bold{x}) &= -\frac{1}{N} \sum_{i=1}^N \sum_{c} p(c \mid x_i) \log p(c \mid x_i),
+\end{align}  
+\noindent
+where $x_i$ is pixel $i$ in image $\bold{x}$, $c$ is the class and $N$ is the number of pixels in the image. 
+
+A few observations can be made from the figures: the effect of the sampling method is stronger when only a few images are selected. As the model is trained on more and more samples, the accuracy plateaus as expected and the variation between the different methods decreases. It can be noted however that random sampling has a lower performance even with a greater number of images.
 
 The overall performance on the Stuttgart dataset is better than that on the Zurich dataset. This can be attributed to the different class statistics of the two datasets. As can be seen in Table \ref{tab:datasets_stats}, the Stuttgart dataset has a larger percentage of crop and weed pixels compared to the Zurich dataset. This allows the model to better distinguish between the different classes. This observation is also supported by the fully supervised performance shown in Table \ref{tab:null_and_fully_supervised} where a higher IoU can be obtained on the Stuttgart dataset. 
 
@@ -628,23 +610,12 @@ Table~\ref{tab:object_wise_stuttgart_zurich} shows how our approach performs on 
 \subsection{Comparison to Other Baselines}
     
 To gain more insight into what our baselines are, we ran additional experiments with the results shown in Table~\ref{tab:add_baselines}. 
-The first row shows the performance when selecting samples that have the highest entropy:
-\begin{align}
-e(\bold{x}) &= -\frac{1}{N} \sum_{i=1}^N \sum_{c} p(c \mid x_i) \log p(c \mid x_i),
-\end{align}  
-\noindent
-where $x_i$ is pixel $i$ in image $\bold{x}$, $c$ is the class and $N$ is the number of pixels in the image.
-
-This measure is frequently used in the literature~\cite{chakraborty2015active, zhou2017fine} for active learning. 
-%Although it finds samples that the network is uncertain of, it needs to be combined with a measure that provides some diversity in the sample selection. 
-Figures \ref{fig:iou_stuttgart} and \ref{fig:iou_zurich} show the entropy performance when selecting higher number of samples. 
-%We note that combining our log-based selection with a similar uncertainty measure to provide diversity yields a better performance as can be seen in the figures.
 
 %In the second row, we run k-means on the gradients to find clusters that might be representative of the training samples. We found that a number of those clusters had very few samples so a more suitable clustering technique might be needed. 
 
-In the second row, we ran an experiment where we trained the model with the pseudo ground truth first and picked samples randomly afterwards. For the first $10$ samples we obtain a higher IoU value ($0.64$) than when picking random samples directly ($0.61$). However for any number of samples larger than $10$, the performance becomes worse. Although pre-training with the pseudo ground truth allows the network to distinguish foreground vegetation from background, the task at hand is to learn three classes and more importantly distinguish crop from weed. Therefore for all experiments, we refine the model without pre-training on the foreground masks.
+In the first row, we ran an experiment where we trained the model with the pseudo ground truth first and picked samples randomly afterwards. We found that it performs slightly better than when picking random samples directly ($0.64$ vs. $0.61$) but still worse than our log and gradient based methods (e.g. $0.64$ vs. $0.71$ for the gradient-norm approach). Although pre-training with the pseudo ground truth allows the network to distinguish foreground vegetation from background, the task at hand is to learn three classes and more importantly distinguish crop from weed. Therefore for all experiments, we refine the model without pre-training on the foreground masks.
 
-In the last row, we run an "oracle" experiment. We compute the difference between the parameters of the model without any refinement and the parameters of the fully supervised model. We then find samples with gradients that align with the parameters difference. This experiment is not intended for sample selection, rather to know if the framework had complete knowledge of how the gradients should look like, would it be able to pick better samples. We found that the oracle performance is similar to our gradient-based approaches after seeing 10 new samples.  %\todo{This means that.. Complete stentence}. 
+In the second row, we run an "oracle" experiment. We compute the difference between the parameters of the model without any refinement and the parameters of the fully supervised model. We then find samples with gradients that align with the parameters difference. This experiment is not intended for sample selection, rather to know if the framework had complete knowledge of how the gradients should look like, would it be able to pick better samples. We found that the oracle performance is similar to our gradient-based approaches after seeing 10 new samples.  %\todo{This means that.. Complete stentence}. 
 This implies that the gradient-based approaches are bounded by this performance. Substantially improving upon their performance might require exploiting additional knowledge from the model, possibly with the aid of unsupervised segmentation. 
 
 
@@ -656,7 +627,7 @@ This implies that the gradient-based approaches are bounded by this performance.
             \toprule
             Method  & mIoU \\ 
             \midrule 
-             Entropy~\cite{chakraborty2015active, zhou2017fine} & 0.5879   \\ \addlinespace
+%             Entropy~\cite{chakraborty2015active, zhou2017fine} & 0.5879   \\ \addlinespace
 %    		  K-means  & 0.6396  \\ \addlinespace
     		  Random-pseudo ground truth   & 0.6448  \\ \addlinespace
     		  Align with parameters difference (oracle)  & 0.7010  \\  
@@ -722,6 +693,7 @@ When inspecting the gradients of the samples selected, we found that the stronge
         \end{tabular}
  %       \label{tab:object_wise_10_stuttgart}
         \label{tab:performance_10_stuttgart}
+                    \vspace{-1.5em}
     \end{table}
    
     
@@ -759,11 +731,9 @@ A more detailed breakdown of the methods performance is shown in Table~\ref{tab:
 In this paper, we introduced and compared several active learning approaches that support the adaptation
 of semantic segmentation networks to new environments. Our approaches  effectively 
 select samples from the new environment for user annotation with the goal of maximizing the benefit from a small number of annotated examples.
-We applied  sample selection strategies to the task crop/weed classification for agricultural robots,
+We applied  sample selection strategies to the task of crop/weed classification for agricultural robots,
 as the appearance between agricultural fields often changes substantially such that
-re-training is needed. 
-
-We compute pseudo ground truth labels using very weakly supervised 
+re-training is needed. We compute pseudo ground truth labels using very weakly supervised 
 segmentation and use those labels to estimate how new, unlabeled samples will 
 affect the weights of the CNN if selected for training. We select the training
 samples for user annotation based on the estimated effect on the weights and use them to refine the 
