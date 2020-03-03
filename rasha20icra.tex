@@ -324,7 +324,7 @@ we train our model on the Bonn sugar beet dataset~\cite{chebrolu2017agricultural
 
 We compare three different approaches to sample selection for active learning. 
 %The first one combines uncertainty with a log-based mechanism for achieving diversity (\secref{ssec:unc}). 
-Our main technical contribution is generation of a pseudo ground truth (\secref{ssec:pseudo-ground-truth}) and its use for loss-based (\secref{ssec:loss}), as well as two gradient-based approaches for sample selection (\secref{ssec:normgrad} and \secref{ssec:gradproj}).
+Our main technical contribution is the generation of a pseudo ground truth (\secref{ssec:pseudo-ground-truth}) and its use for loss-based (\secref{ssec:loss}), as well as two gradient-based approaches for sample selection (\secref{ssec:normgrad} and \secref{ssec:gradproj}).
 
 
 
@@ -406,13 +406,13 @@ The loss of the network is an indication of the segmentation error. Given that t
 %Again, different to typical approaches of active learning, which exploit the loss for sample selection, we sort
 %the images   based on this loss in a descending order and selected on a log-scale ranking to encourage diversity
 
-We found that training only on the images with the highest loss values did not generalize well. This could indicate that they are not representative enough of the overall dataset. Therefore, we instead employ a scheme that samples images with a diverse range of loss values, but prefers those with higher losses. To this end, we sort the images by their loss in a descending order, and then select them uniformly on a logarithmic scale. Specifically, we compute index i of the n-th sample as:
+We found that training only on the images with the highest loss values did not generalize well. This could indicate that they are not representative enough of the overall dataset. Therefore, we instead employ a scheme that samples images with a diverse range of loss values, but prefers those with higher losses. To this end, we sort the images by their loss in a descending order, and then select them uniformly on a logarithmic scale. Specifically, we compute index $i$ of the $n$-th sample as:
 \begin{align}
 i = \lfloor\lvert P \rvert ^ {n/(\lvert S \rvert -1)}\rfloor - 1, 
 \quad  \quad n\in \lbrace 0,1,\ldots,\rvert S\rvert-1\rbrace
 \end{align}
 
-where $i$ is the index of the $n$-th sample, $\lvert S \rvert$ is the number of samples to be selected and $\lvert P \rvert$ is the size of the images pool. Since the samples are sorted, this approach would more heavily select those that have higher loss values while not completely discarding images that the network is performing well on.
+where $\lvert S \rvert$ is the number of samples to be selected and $\lvert P \rvert$ is the size of the images pool. Since the samples are sorted, this approach would more heavily select those that have higher loss values while not completely discarding images that the network is performing well on.
 %The images are sorted based on this loss in a descending order. Rather than selecting those with the highest loss, we found that the network learns better when presented with diverse samples. The samples are therefore selected on a log-scale space.
 %
 %We generate a string of numbers, starting from zero, that are spaced evenly on a log scale. These numbers are then used as the indices of the samples to be selected. Since the samples are sorted, this approach would more heavily select those that have higher loss values while not completely discarding images that the network is performing well on.
@@ -487,7 +487,7 @@ The experiments in this section are designed to show how the proposed sample sel
             \bottomrule
         \end{tabular}
         \label{tab:null_and_fully_supervised}
-            \vspace{-2em}
+            \vspace{-1.5em}
     \end{table}
 
 
@@ -514,7 +514,7 @@ The experiments in this section are designed to show how the proposed sample sel
    \end{figure}
    
 
-Figures \ref{fig:iou_stuttgart} and \ref{fig:iou_zurich} show the performance on the Stuttgart and Zurich datasets when selecting samples for annotation with different methods. We include as baselines random sampling, and selecting samples that have the highest entropy~(\cite{chakraborty2015active, zhou2017fine}):
+Figures \ref{fig:iou_stuttgart} and \ref{fig:iou_zurich} show the performance on the Stuttgart and Zurich datasets when selecting samples for annotation with different methods. As baselines we include random sampling, and selecting samples that have the highest entropy~(\cite{chakraborty2015active, zhou2017fine}):
 \begin{align}
 H(\bold{x}) &= -\frac{1}{N} \sum_{i=1}^N \sum_{c} p(c \mid x_i) \log p(c \mid x_i),
 \end{align}  
